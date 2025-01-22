@@ -39,8 +39,8 @@ void	debug_parsing(t_info *info)
 	count = info->count;
 	while (idx < count)
 	{
-		printf("Philo [%i]: Dead[%i], State[%i], ", idx,
-		info->philos[idx].dead, info->philos[idx].state);
+		printf("Philo ID[%i]: Halted[%i], State[%i], ", info->philos[idx].id,
+		info->philos[idx].halt, info->philos[idx].state);
 		printf("TtD[%i], TtE[%i], TtS[%i], EA[%i]\n",
 		info->philos[idx].death_time,
 		info->philos[idx].eat_time, info->philos[idx].sleep_time,

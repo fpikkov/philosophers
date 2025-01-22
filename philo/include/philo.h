@@ -42,9 +42,9 @@ typedef enum e_state
 
 /**
  * @brief Struct which stores data for each philosopher.
- * @param dead has the philosopher died
+ * @param halt whether the simulation should stop
  * @param thread the thread associated with the philosopher
- * @param id the id of the philosopher connected with the struct
+ * @param id the id of the philosopher
  * @param state the current state of the philosopher
  * @param death_time the time it takes for a philo to die
  * @param eat_time the time it takes for a philo to eat
@@ -55,17 +55,22 @@ typedef enum e_state
  */
 typedef struct s_philo
 {
-	bool		dead;
-	pthread_t	thread;
-	int32_t		id;
-	t_state		state;
-	int32_t		death_time;
-	int32_t		eat_time;
-	int32_t		sleep_time;
-	int32_t		eat_amount;
-	int32_t		timer;
-	int32_t		timer_last_meal;
-}				t_philo;
+	bool			halt;
+	pthread_t		thread;
+	int32_t			id;
+	t_state			state;
+	int32_t			death_time;
+	int32_t			eat_time;
+	int32_t			sleep_time;
+	int32_t			eat_amount;
+	int32_t			timer;
+	int32_t			timer_last_meal;
+	pthread_mutex_t	*philo_died;
+	pthread_mutex_t	*printing;
+	pthread_mutex_t	*philos_fed;
+	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	*left_fork;
+}					t_philo;
 
 /**
  * @brief Struct for storing variables from the argment vector.
@@ -74,8 +79,8 @@ typedef struct s_philo
  * @param count the amount of philosophers
  * @param philos the structs storing each philosopher
  * @param forks the array containing all forks
- * @param dead_mutex if a philo dies, locks the mutex
- * @param print_mutex if writing log messages, locks the mutex
+ * @param philo_died if a philo dies, locks the mutex
+ * @param printing if writing log messages, locks the mutex
  * @param philos_fed locks the mutex if all philos are fed
  */
 typedef struct s_info
@@ -85,28 +90,33 @@ typedef struct s_info
 	int32_t			count;
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	dead_mutex;
-	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	philo_died;
+	pthread_mutex_t	printing;
 	pthread_mutex_t	philos_fed;
 }					t_info;
 
 /**
- * Parses the given arguments and stores the values in an allocated struct.
- * @param[in] argc Argument counter from main()
+ * @brief Parses the given arguments and stores the values in a struct.
+ * Also attempts to build all the philosopher structs.
+ * @param[in] argc Aargument counter from main()
  * @param[in] argv Argument vector from main()
  * @return Pointer to t_info type struct on success, otherwise NULL
  */
 t_info	*parse_args(int argc, char **argv);
+
 /**
- * Allocates threads on the heap for philosophers and mutex threads for forks.
- * @param[in] info The pre-allocated type t_info where to store threads
- * @param[out] info On success allocated params philos and forks
- * @return true on successful allocation, otherwise false
+ * @brief Sets the pointers in t_philo to the adressses in t_info.
+ * Right fork is found with the formula: index + N -1 % N.
+ * Left fork is found with the formula: index + 1 % N.
+ * @param info Master structure of the project
  */
-bool	alloc_threads(t_info *info);
+void	set_addresses(t_info *info);
 
-// Error logging
-
+/**
+ * @brief Prints an error message based on an enum
+ * @param[in] error a value from the t_error enum
+ * @return EXIT_FAILURE in all cases
+ */
 int		print_error(t_error error);
 
 // Cleanup functions
@@ -126,6 +136,16 @@ void	free_info(t_info *info);
  * pthread.h	:
  * 	pthread_	- create, detach, join
  * 		mutex_	- init, destroy, lock, unlock
+ */
+
+/**
+ * *** QUESTIONS ***
+ *
+ * 1. Will they be thinking for an unspecified amount of time
+ *  as they wait for the forks to open up?
+ * 2. How to update the timers on all threads automagically?
+ * 3. With the optional argument, will the timers still be counting
+ *  while the philosopher waits for others to finish up eating?
  */
 
 /**
@@ -158,32 +178,6 @@ void	free_info(t_info *info);
  * 		- timestamp_in_ms X died
  * 2. A displayed state message should not be mixed up with another message.
  * 3. Philosopher death should be displayed within 10 ms after the event.
- */
-
-/**
- * *** OVERVIEW ***
- *
- * 1. One or more philosophers sit at a round table.
- *    There is a large bowl of spaghetti in the middle of the table.
- * 2. The philosophers alternatively eat, think, or sleep.
- * 3. There are as many forks as philosophers.
- * 4. A philosopher takes their right and their left forks to eat.
- * 5. Philosopher's cycle: finish eating (return forks) > sleep > think.
- *    The simulation stops when a philosopher dies of starvation.
- * 6. Every philosopher needs to eat and should never starve.
- * 7. Philosophers don’t speak with each other.
- * 8. Philosophers don’t know if another philosopher is about to die.
- * 9. Philosophers should avoid dying.
- */
-
-/**
- * *** GUIDELINES ***
- *
- * 1. Each philosopher should be a thread.
- * 2. There is one fork between each pair of philosophers.
- *    For only one philosopher, there should be only one fork on the table.
- * 3. To prevent philosophers from duplicating forks,
- *    you should protect the forks state with a mutex for each of them.
  */
 
 #endif

@@ -36,23 +36,9 @@ static int	philo_atoi(const char *str)
 	return ((int)nbr);
 }
 
-static bool	parse_info(t_info *info, int argc, char **argv)
-{
-	if (argc < 5)
-		return (false);
-	info->halt = false;
-	info->count = philo_atoi(argv[1]);
-	if (info->count < 1)
-		return (false);
-	info->forks = (pthread_mutex_t *)malloc
-		(sizeof(pthread_mutex_t) * info->count);
-	if (!info->forks)
-		return (false);
-	return (true);
-}
-
 static bool	init_philo(t_info *info, int32_t idx, int argc, char **argv)
 {
+	info->philos[idx].id = idx;
 	info->philos[idx].death_time = philo_atoi(argv[2]);
 	info->philos[idx].eat_time = philo_atoi(argv[3]);
 	info->philos[idx].sleep_time = philo_atoi(argv[4]);
@@ -85,6 +71,21 @@ static bool	create_philos(t_info *info, int argc, char **argv)
 			return (false);
 		idx++;
 	}
+	return (true);
+}
+
+static bool	parse_info(t_info *info, int argc, char **argv)
+{
+	if (argc < 5)
+		return (false);
+	info->halt = false;
+	info->count = philo_atoi(argv[1]);
+	if (info->count < 1)
+		return (false);
+	info->forks = (pthread_mutex_t *)malloc
+		(sizeof(pthread_mutex_t) * info->count);
+	if (!info->forks)
+		return (false);
 	return (true);
 }
 

@@ -12,27 +12,22 @@
 
 #include "philo.h"
 
-/**
- * *** PSEUDOCODE ***
- *
- * The potentially better way is to give each philo their own struct.
- * This will enable each one to have their own timers and eat counter.
- *
- * But then where to store each mutex fork?
- */
-bool	alloc_threads(t_info *info)
+void	set_addresses(t_info *info)
 {
 	int32_t	idx;
 	int32_t	count;
 
-	if (!info)
-		return (false);
+	if (!info || !info->philos)
+		return ;
 	idx = 0;
 	count = info->count;
 	while (idx < count)
 	{
-
+		info->philos[idx].right_fork = &info->forks[(idx + count - 1) % count];
+		info->philos[idx].left_fork = &info->forks[(idx + 1) % count];
+		info->philos[idx].philos_fed = &info->philos_fed;
+		info->philos[idx].philo_died = &info->philo_died;
+		info->philos[idx].printing = &info->printing;
 		idx++;
 	}
-	return (true);
 }
