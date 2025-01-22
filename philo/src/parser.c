@@ -38,9 +38,15 @@ static int	philo_atoi(const char *str)
 
 static bool	parse_info(t_info *info, int argc, char **argv)
 {
-	info->dead = false;
+	if (argc < 5)
+		return (false);
+	info->halt = false;
 	info->count = philo_atoi(argv[1]);
 	if (info->count < 1)
+		return (false);
+	info->forks = (pthread_mutex_t *)malloc
+		(sizeof(pthread_mutex_t) * info->count);
+	if (!info->forks)
 		return (false);
 	return (true);
 }

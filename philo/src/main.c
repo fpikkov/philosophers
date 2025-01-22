@@ -26,6 +26,32 @@
  * 6. Exit program and free resources once a philo dies or they have eaten enough.
  */
 
+void	debug_parsing(t_info *info)
+{
+	int32_t	idx;
+	int32_t	count;
+
+	if (!info)
+		return ;
+	if (!info->philos)
+		return ;
+	idx = 0;
+	count = info->count;
+	while (idx < count)
+	{
+		printf("Philo [%i]: Dead[%i], State[%i], ", idx,
+		info->philos[idx].dead, info->philos[idx].state);
+		printf("TtD[%i], TtE[%i], TtS[%i], EA[%i]\n",
+		info->philos[idx].death_time,
+		info->philos[idx].eat_time, info->philos[idx].sleep_time,
+		info->philos[idx].eat_amount);
+		idx++;
+	}
+}
+
+/**
+ * TODO: Remove debugging function
+ */
 int	main(int argc, char **argv)
 {
 	t_info		*info;
@@ -38,6 +64,7 @@ int	main(int argc, char **argv)
 	if (!alloc_threads(info))
 		return (print_error(THREAD_FAILURE));
 	// Rest of the code
+	debug_parsing(info);
 
 	if (info)
 		free_info(info);

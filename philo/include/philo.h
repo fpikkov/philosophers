@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fpikkov <fpikkov@student.hive.fi>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/22 17:36:13 by fpikkov           #+#    #+#             */
+/*   Updated: 2025/01/22 17:36:14 by fpikkov          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -57,21 +69,25 @@ typedef struct s_philo
 
 /**
  * @brief Struct for storing variables from the argment vector.
+ * @param halt halts the simulation
  * @param monitor the monitor thread which tracks the conditions of philos
- * @param dead if a philosopher dies the simulation stops
  * @param count the amount of philosophers
  * @param philos the structs storing each philosopher
  * @param forks the array containing all forks
- * @param dead_mutex locks the dead boolean from being accessed
+ * @param dead_mutex if a philo dies, locks the mutex
+ * @param print_mutex if writing log messages, locks the mutex
+ * @param philos_fed locks the mutex if all philos are fed
  */
 typedef struct s_info
 {
+	bool			halt;
 	pthread_t		monitor;
-	bool			dead;
 	int32_t			count;
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	dead_mutex;
+	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	philos_fed;
 }					t_info;
 
 /**

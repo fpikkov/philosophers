@@ -22,21 +22,17 @@
  */
 bool	alloc_threads(t_info *info)
 {
-	uint32_t	count;
+	int32_t	idx;
+	int32_t	count;
 
 	if (!info)
 		return (false);
+	idx = 0;
 	count = info->count;
-	info->philos = (pthread_t *)malloc(sizeof(pthread_t) * count);
-	if (!info->philos)
-		return (false);
-	info->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * count);
-	if (!info->forks)
+	while (idx < count)
 	{
-		if (info->philos)
-			free(info->philos);
-		free(info);
-		return (false);
+
+		idx++;
 	}
 	return (true);
 }

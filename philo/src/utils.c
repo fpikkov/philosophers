@@ -24,6 +24,11 @@ void	free_info(t_info *info)
 		free(info->philos);
 		info->philos = NULL;
 	}
+	if (info->forks)
+	{
+		free(info->forks);
+		info->forks = NULL;
+	}
 	free(info);
 	info = NULL;
 }
