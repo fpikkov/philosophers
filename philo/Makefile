@@ -22,7 +22,9 @@ DBG_BUILD = ${BUILD_DIR}/debug
 
 SRCS =	${SRC_DIR}/main.c \
 		${SRC_DIR}/parser.c \
-		${SRC_DIR}/threads.c
+		${SRC_DIR}/threads.c \
+		${SRC_DIR}/error.c \
+		${SRC_DIR}/utils.c
 
 OBJS = ${patsubst ${SRC_DIR}/%.c,${OBJ_DIR}/%.o,${SRCS}}
 
@@ -37,7 +39,7 @@ ${BUILD}: ${OBJS}
 ${OBJ_DIR}/%.o : ${SRC_DIR}/%.c
 	@echo "${CYAN}Generating object files...${CLEAR}"
 	@mkdir -p ${OBJ_DIR}
-	$(CC) $(CFLAGS) -c $< -o $@ ${INC_FLAGS}
+	@$(CC) $(CFLAGS) -c $< -o $@ ${INC_FLAGS}
 
 debug: CFLAGS = ${DBG_FLAGS}
 debug: ${DBG_BUILD}
@@ -45,15 +47,15 @@ debug: ${DBG_BUILD}
 ${DBG_BUILD}: ${OBJS}
 	@echo "${GREEN}Generating debug build...${CLEAR}"
 	@mkdir -p ${BUILD_DIR}
-	$(CC) $(DBG_FLAGS) $(P_FLAG) -o $@ $^
+	@$(CC) $(DBG_FLAGS) $(P_FLAG) -o $@ $^
 
 clean:
 	@echo "${RED}Cleaning object files...${CLEAR}"
-	rm -rf ${OBJ_DIR}
+	@rm -rf ${OBJ_DIR}
 
 fclean: clean
 	@echo "${RED}Fully cleaning project...${CLEAR}"
-	rm -rf ${BUILD_DIR}
+	@rm -rf ${BUILD_DIR}
 
 re: fclean all
 

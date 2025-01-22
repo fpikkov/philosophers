@@ -1,22 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   threads.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fpikkov <fpikkov@student.hive.fi>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/22 13:52:51 by fpikkov           #+#    #+#             */
+/*   Updated: 2025/01/22 13:52:52 by fpikkov          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
-
-/* pthread_t	*spawn(int32_t amount)
-{
-	pthread_t	*philos;
-	int32_t		i;
-
-	if (amount < 1)
-		return (NULL);
-	philos = (pthread_t *)malloc(sizeof(pthread_t) * amount);
-	if (!philos)
-		return (NULL);
-	i = 0;
-	while (i < amount)
-	{
-
-	}
-	return (philos);
-} */
 
 /**
  * *** PSEUDOCODE ***

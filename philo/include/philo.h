@@ -16,20 +16,63 @@ typedef enum e_error
 {
 	MISSING_ARGS = 10,
 	PARSE_FAILURE,
-	THREAD_FAILURE
+	THREAD_FAILURE,
+	ERR_GENERIC
 }	t_error;
 
-// Struct for storing variables from the argment vector.
+// Enumeration for the philosopher states.
+typedef enum e_state
+{
+	THINKING = 0,
+	EATING,
+	SLEEPING
+}	t_state;
+
+/**
+ * @brief Struct which stores data for each philosopher.
+ * @param dead has the philosopher died
+ * @param thread the thread associated with the philosopher
+ * @param id the id of the philosopher connected with the struct
+ * @param state the current state of the philosopher
+ * @param death_time the time it takes for a philo to die
+ * @param eat_time the time it takes for a philo to eat
+ * @param sleep_time the time it takes for a philo to sleep
+ * @param eat_amount optional, the times each philo has to eat
+ * @param timer the time elapsed since the last state change
+ * @param timer_last_meal time elapsed since last meal
+ */
+typedef struct s_philo
+{
+	bool		dead;
+	pthread_t	thread;
+	int32_t		id;
+	t_state		state;
+	int32_t		death_time;
+	int32_t		eat_time;
+	int32_t		sleep_time;
+	int32_t		eat_amount;
+	int32_t		timer;
+	int32_t		timer_last_meal;
+}				t_philo;
+
+/**
+ * @brief Struct for storing variables from the argment vector.
+ * @param monitor the monitor thread which tracks the conditions of philos
+ * @param dead if a philosopher dies the simulation stops
+ * @param count the amount of philosophers
+ * @param philos the structs storing each philosopher
+ * @param forks the array containing all forks
+ * @param dead_mutex locks the dead boolean from being accessed
+ */
 typedef struct s_info
 {
+	pthread_t		monitor;
+	bool			dead;
 	int32_t			count;
-	int32_t			death_time;
-	int32_t			eat_time;
-	int32_t			sleep_time;
-	int32_t			eat_amount;
-	pthread_t		*philos;
+	t_philo			*philos;
 	pthread_mutex_t	*forks;
-}				t_info;
+	pthread_mutex_t	dead_mutex;
+}					t_info;
 
 /**
  * Parses the given arguments and stores the values in an allocated struct.
@@ -45,6 +88,14 @@ t_info	*parse_args(int argc, char **argv);
  * @return true on successful allocation, otherwise false
  */
 bool	alloc_threads(t_info *info);
+
+// Error logging
+
+int		print_error(t_error error);
+
+// Cleanup functions
+
+void	free_info(t_info *info);
 
 /**
  * *** ALLOWED FUNCTIONS ***

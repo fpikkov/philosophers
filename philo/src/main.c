@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fpikkov <fpikkov@student.hive.fi>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/22 13:52:32 by fpikkov           #+#    #+#             */
+/*   Updated: 2025/01/22 13:52:34 by fpikkov          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 /**
@@ -14,17 +26,6 @@
  * 6. Exit program and free resources once a philo dies or they have eaten enough.
  */
 
-static int	print_error(t_error err)
-{
-	if (err == MISSING_ARGS)
-		(void)write(STDERR_FILENO, "Incorrect number of args.\n", 27);
-	else if (err == PARSE_FAILURE)
-		(void)write(STDERR_FILENO, "Error in parsing values\n", 25);
-	else if (err == THREAD_FAILURE)
-		(void)write(STDERR_FILENO, "Failed to allocate threads.\n", 29);
-	return (EXIT_FAILURE);
-}
-
 int	main(int argc, char **argv)
 {
 	t_info		*info;
@@ -39,6 +40,6 @@ int	main(int argc, char **argv)
 	// Rest of the code
 
 	if (info)
-		free(info);
+		free_info(info);
 	return (EXIT_SUCCESS);
 }
