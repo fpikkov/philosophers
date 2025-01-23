@@ -23,6 +23,16 @@
 # include <limits.h>
 # include <stdbool.h>
 
+// Enumeration for destroying specific mutexes
+typedef enum e_flags
+{
+	FORKS = 1 << 0,
+	DEAD = 1 << 1,
+	PRINT = 1 << 2,
+	FED = 1 << 3,
+	ALL = FORKS | DEAD | PRINT | FED
+}	t_flags;
+
 // Enumeration for picking the correct error message.
 typedef enum e_error
 {
@@ -55,7 +65,7 @@ typedef enum e_state
  */
 typedef struct s_philo
 {
-	bool			halt;
+	bool			*halt;
 	pthread_t		thread;
 	int32_t			id;
 	t_state			state;
@@ -119,9 +129,23 @@ void	set_addresses(t_info *info);
  */
 int		print_error(t_error error);
 
+/**
+ * @brief Initializes all the mutexes.
+ * On failure will destroy the previously initialized mutexes.
+ * @return true if successful, otherwise false
+ */
+bool	init_mutexes(t_info *info);
+
 // Cleanup functions
 
 void	free_info(t_info *info);
+
+/**
+ * @brief Destroys mutexes based on flags and up to but not including count
+ * @param[in] info Master structure of the project
+ * @param[in] count How many mutexes to destroy
+ */
+void	destroy_mutexes(t_info *info, int32_t count, t_flags flag);
 
 /**
  * *** ALLOWED FUNCTIONS ***

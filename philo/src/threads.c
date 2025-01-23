@@ -28,6 +28,29 @@ void	set_addresses(t_info *info)
 		info->philos[idx].philos_fed = &info->philos_fed;
 		info->philos[idx].philo_died = &info->philo_died;
 		info->philos[idx].printing = &info->printing;
+		info->philos[idx].halt = &info->halt;
 		idx++;
 	}
+}
+
+bool	init_mutexes(t_info *info)
+{
+	int32_t	idx;
+
+	idx = 0;
+	if (!info)
+		return (false);
+	while (idx < info->count)
+	{
+		if (pthread_mutex_init(&info->forks[idx], NULL) != 0)
+			return (destroy_mutexes(info, idx, FORKS), false);
+		idx++;
+	}
+	if (pthread_mutex_init(&info->philo_died, NULL) != 0)
+		return (destroy_mutexes(info, idx, FORKS),false);
+	if (pthread_mutex_init(&info->printing, NULL) != 0)
+		return (destroy_mutexes(info, idx, FORKS | DEAD),false);
+	if (pthread_mutex_init(&info->philos_fed, NULL) != 0)
+		return (destroy_mutexes(info, idx, FORKS | DEAD | PRINT),false);
+	return (true);
 }

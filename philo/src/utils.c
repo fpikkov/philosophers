@@ -12,9 +12,6 @@
 
 #include "philo.h"
 
-/**
- * TODO: Detach threads and mutexes
- */
 void	free_info(t_info *info)
 {
 	if (!info)
@@ -31,4 +28,24 @@ void	free_info(t_info *info)
 	}
 	free(info);
 	info = NULL;
+}
+
+void	destroy_mutexes(t_info *info, int32_t count, t_flags flag)
+{
+	int32_t	idx;
+
+	idx = 0;
+	if (!info || !count)
+		return ;
+	while (idx < count && (flag & FORKS))
+	{
+		pthread_mutex_destroy(&info->forks[idx]);
+		idx++;
+	}
+	if (flag & DEAD)
+		pthread_mutex_destroy(&info->philo_died);
+	if (flag & PRINT)
+		pthread_mutex_destroy(&info->printing);
+	if (flag & FED)
+		pthread_mutex_destroy(&info->philos_fed);
 }

@@ -100,5 +100,6 @@ t_info	*parse_args(int argc, char **argv)
 		return (free(info), NULL);
 	if (!create_philos(info, argc, argv))
 		return (free_info(info), NULL);
+	set_addresses(info);
 	return (info);
 }

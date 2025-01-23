@@ -61,11 +61,15 @@ int	main(int argc, char **argv)
 	info = parse_args(argc, argv);
 	if (!info)
 		return (print_error(PARSE_FAILURE));
-	if (!alloc_threads(info))
+	if (!init_mutexes(info))
+	{
+		free_info(info);
 		return (print_error(THREAD_FAILURE));
-	// Rest of the code
+	}
+	// -------- ROUTINES -------
 	debug_parsing(info);
-
+	// -------------------------
+	destroy_mutexes(info, info->count, ALL);
 	if (info)
 		free_info(info);
 	return (EXIT_SUCCESS);
