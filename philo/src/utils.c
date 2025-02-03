@@ -43,9 +43,21 @@ void	destroy_mutexes(t_info *info, int32_t count, t_flags flag)
 		idx++;
 	}
 	if (flag & DEAD)
-		pthread_mutex_destroy(&info->philo_died);
+		pthread_mutex_destroy(&info->halt_sim);
 	if (flag & PRINT)
 		pthread_mutex_destroy(&info->printing);
-	if (flag & FED)
-		pthread_mutex_destroy(&info->philos_fed);
+}
+
+void	destroy_threads(t_info *info, int32_t count, bool monitor)
+{
+	int32_t	idx;
+
+	idx = 0;
+	if (monitor)
+		pthread_join(info->monitor, NULL);
+	while (idx < count)
+	{
+		pthread_join(info->philos[idx].thread, NULL);
+		idx++;
+	}
 }

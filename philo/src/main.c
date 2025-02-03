@@ -13,17 +13,25 @@
 #include "philo.h"
 
 /**
- * *** PSEUDOCODE ***
+ * *** QUESTIONS ***
  *
- * 1. Parse args so you can get the integers for each arg.
- *     Consider argc[6] exit conditions if it exists.
- * 2. Create threads for each philospher. (Do philos get their own structs/ LL?)
- * 3. Create equal amount of forks through mutex.
- * 4. Run sim: eat > sleep > think > eat
- * 5. (a) Uneven no. philos will grab a fork to their left AND THEN the right.
- *         Evem no. philos will do so in opposite order. Asymmetry prevents deadlock.
- *    (b) Alternatively implement a multithreading solution to avoid deadlock.
- * 6. Exit program and free resources once a philo dies or they have eaten enough.
+ * 1. Will they be thinking for an unspecified amount of time
+ *  as they wait for the forks to open up?
+ * 2. How to update the timers on all threads automagically?
+ * 3. With the optional argument, will the timers still be counting
+ *  while the philosopher waits for others to finish up eating?
+ */
+/**
+ * *** PROGRAM LOGS ***
+ *
+ * 1.  Any state change of a philosopher must be formatted as follows :
+ * 		- timestamp_in_ms X has taken a fork
+ * 		- timestamp_in_ms X is eating
+ * 		- timestamp_in_ms X is sleeping
+ * 		- timestamp_in_ms X is thinking
+ * 		- timestamp_in_ms X died
+ * 2. A displayed state message should not be mixed up with another message.
+ * 3. Philosopher death should be displayed within 10 ms after the event.
  */
 
 void	debug_parsing(t_info *info)
@@ -40,11 +48,11 @@ void	debug_parsing(t_info *info)
 	while (idx < count)
 	{
 		printf("Philo ID[%i]: Halted[%i], State[%i], ", info->philos[idx].id,
-		info->philos[idx].halt, info->philos[idx].state);
+			*(info->philos[idx].halt), info->philos[idx].state);
 		printf("TtD[%i], TtE[%i], TtS[%i], EA[%i]\n",
-		info->philos[idx].death_time,
-		info->philos[idx].eat_time, info->philos[idx].sleep_time,
-		info->philos[idx].eat_amount);
+			info->philos[idx].death_time,
+			info->philos[idx].eat_time, info->philos[idx].sleep_time,
+			info->philos[idx].eat_amount);
 		idx++;
 	}
 }

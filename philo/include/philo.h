@@ -29,8 +29,7 @@ typedef enum e_flags
 	FORKS = 1 << 0,
 	DEAD = 1 << 1,
 	PRINT = 1 << 2,
-	FED = 1 << 3,
-	ALL = FORKS | DEAD | PRINT | FED
+	ALL = FORKS | DEAD | PRINT
 }	t_flags;
 
 // Enumeration for picking the correct error message.
@@ -60,7 +59,6 @@ typedef enum e_state
  * @param eat_time the time it takes for a philo to eat
  * @param sleep_time the time it takes for a philo to sleep
  * @param eat_amount optional, the times each philo has to eat
- * @param timer the time elapsed since the last state change
  * @param timer_last_meal time elapsed since last meal
  */
 typedef struct s_philo
@@ -73,13 +71,11 @@ typedef struct s_philo
 	int32_t			eat_time;
 	int32_t			sleep_time;
 	int32_t			eat_amount;
-	int32_t			timer;
-	int32_t			timer_last_meal;
-	pthread_mutex_t	*philo_died;
+	pthread_mutex_t	*halt_sim;
 	pthread_mutex_t	*printing;
-	pthread_mutex_t	*philos_fed;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*left_fork;
+	struct timeval	timer_last_meal;
 }					t_philo;
 
 /**
@@ -89,9 +85,9 @@ typedef struct s_philo
  * @param count the amount of philosophers
  * @param philos the structs storing each philosopher
  * @param forks the array containing all forks
- * @param philo_died if a philo dies, locks the mutex
+ * @param halt_sim mutex for stopping simulation
  * @param printing if writing log messages, locks the mutex
- * @param philos_fed locks the mutex if all philos are fed
+ * @param timer the global timer for logging
  */
 typedef struct s_info
 {
@@ -100,10 +96,12 @@ typedef struct s_info
 	int32_t			count;
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	philo_died;
+	pthread_mutex_t	halt_sim;
 	pthread_mutex_t	printing;
-	pthread_mutex_t	philos_fed;
+	struct timeval	timer;
 }					t_info;
+
+// --- Setup functions ---
 
 /**
  * @brief Parses the given arguments and stores the values in a struct.
@@ -136,7 +134,11 @@ int		print_error(t_error error);
  */
 bool	init_mutexes(t_info *info);
 
-// Cleanup functions
+// --- Routine functions ---
+
+void	log_death(t_info *info, int32_t num);
+
+// --- Cleanup functions ---
 
 void	free_info(t_info *info);
 
@@ -148,60 +150,11 @@ void	free_info(t_info *info);
 void	destroy_mutexes(t_info *info, int32_t count, t_flags flag);
 
 /**
- * *** ALLOWED FUNCTIONS ***
- *
- * LIBFT AUTHORIZED : NO
- *
- * string.h		: memset
- * stdio.h		: printf
- * stdlib.h		: malloc, free
- * unistd.h		: write, usleep
- * sys/time.h	: gettimeofday
- * pthread.h	:
- * 	pthread_	- create, detach, join
- * 		mutex_	- init, destroy, lock, unlock
+ * @brief Destroys all threads by using pthread_join
+ * @param[in] info Master struct of the project
+ * @param[in] count How many philo threads to kill
+ * @param[in] monitor If monitor thread should be killed
  */
-
-/**
- * *** QUESTIONS ***
- *
- * 1. Will they be thinking for an unspecified amount of time
- *  as they wait for the forks to open up?
- * 2. How to update the timers on all threads automagically?
- * 3. With the optional argument, will the timers still be counting
- *  while the philosopher waits for others to finish up eating?
- */
-
-/**
- * *** GLOBAL RULES ***
- *
- * 1. Global variables are forbidden!
- * 2. Args: number_of_philosophers, time_to_die, time_to_eat, time_to_sleep,
- *          [number_of_times_each_philosopher_must_eat]
- * - The number of philosophers and also the number of forks.
- * - If a philo didn't start eating "time_to_die" ms since their last meal
- *    or the beginning of simulation they die.
- * - The time it takes for a philosopher to eat while holding two forks.
- * - The time a philosopher will spend sleeping (in milliseconds).
- * - (optional) Simulation stops when each philo has eaten specified times.
- *   Otherwise simulation will end when a philo dies.
- * 3. Each philosopher has a number ranging from 1 to number_of_philosophers.
- * 4. Philo [1] sits next to philo [number_of_philosophers].
- *    Other philos [N] sits between philo [N - 1] and philo [N + 1].
- * 5. Your program must not have any data races.
- */
-
-/**
- * *** PROGRAM LOGS ***
- *
- * 1.  Any state change of a philosopher must be formatted as follows :
- * 		- timestamp_in_ms X has taken a fork
- * 		- timestamp_in_ms X is eating
- * 		- timestamp_in_ms X is sleeping
- * 		- timestamp_in_ms X is thinking
- * 		- timestamp_in_ms X died
- * 2. A displayed state message should not be mixed up with another message.
- * 3. Philosopher death should be displayed within 10 ms after the event.
- */
+void	destroy_threads(t_info *info, int32_t count, bool monitor)
 
 #endif
