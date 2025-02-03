@@ -56,7 +56,6 @@ static void	monitor_routine(void *arg)
 	int32_t	idx;
 
 	info = (t_info *)arg;
-	gettimeofday(&info->timer, NULL);
 	while (!info->halt)
 	{
 		idx = 0;
@@ -74,6 +73,37 @@ static void	monitor_routine(void *arg)
 	}
 }
 
+static void	grab_forks(pthread_mutex_t *left, pthread_mutex_t *right)
+{
+	while (true)
+	{
+		while (pthread_mutex_lock(left))
+			usleep(5);
+		if (pthread_mutex_lock(right))
+		{
+			pthread_mutex_unlock(left);
+			continue ;
+		}
+		break ;
+	}
+}
+static bool start_eating(t_philo *philo)
+{
+	if (philo->id % 2)
+	{
+		grab_forks(philo->right_fork, philo->left_fork);
+		log_event(philo, EATING);
+		pthread_mutex_unlock(philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
+	}
+	else
+	{
+		grab_forks(philo->left_fork, philo->right_fork);
+		log_event(philo, EATING);
+		pthread_mutex_unlock(philo->left_fork);
+		pthread_mutex_unlock(philo->right_fork);
+	}
+}
 static void	philo_routine(void *arg)
 {
 	t_philo	*philo;
@@ -83,6 +113,8 @@ static void	philo_routine(void *arg)
 	while (!philo->halt)
 	{
 		// TODO: Philo subroutine
+		// TODO: Call start_eating
+		// TODO: Put the reest of mutex locks inside of while loops
 	}
 }
 

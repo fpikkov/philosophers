@@ -54,7 +54,6 @@ typedef enum e_state
  * @param halt whether the simulation should stop
  * @param thread the thread associated with the philosopher
  * @param id the id of the philosopher
- * @param state the current state of the philosopher
  * @param death_time the time it takes for a philo to die
  * @param eat_time the time it takes for a philo to eat
  * @param sleep_time the time it takes for a philo to sleep
@@ -66,7 +65,6 @@ typedef struct s_philo
 	bool			*halt;
 	pthread_t		thread;
 	int32_t			id;
-	t_state			state;
 	int32_t			death_time;
 	int32_t			eat_time;
 	int32_t			sleep_time;
@@ -87,7 +85,6 @@ typedef struct s_philo
  * @param forks the array containing all forks
  * @param halt_sim mutex for stopping simulation
  * @param printing if writing log messages, locks the mutex
- * @param timer the global timer for logging
  */
 typedef struct s_info
 {
@@ -98,7 +95,6 @@ typedef struct s_info
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	halt_sim;
 	pthread_mutex_t	printing;
-	struct timeval	timer;
 }					t_info;
 
 // --- Setup functions ---
@@ -137,6 +133,7 @@ bool	init_mutexes(t_info *info);
 // --- Routine functions ---
 
 void	log_death(t_info *info, int32_t num);
+void	log_event(t_philo *philo, t_state state);
 
 // --- Cleanup functions ---
 
