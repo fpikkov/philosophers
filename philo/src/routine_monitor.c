@@ -14,11 +14,9 @@
 
 static bool	has_philo_died(t_info *info, int32_t idx)
 {
-	struct timeval	tv;
 	int32_t			current;
 
-	gettimeofday(&tv, NULL);
-	current = tv.tv_usec - info->philos[idx].timer_last_meal.tv_usec;
+	current = time_in_ms() - info->philos[idx].timer_last_meal;
 	if (current >= info->philos[idx].death_time \
 	&& (info->philos[idx].eat_amount > 0 \
 	|| info->philos[idx].eat_amount == -1))
@@ -50,7 +48,7 @@ static bool	have_philos_eaten(t_info *info)
 	return (true);
 }
 
-void	monitor_routine(void *arg)
+void	*monitor_routine(void *arg)
 {
 	t_info	*info;
 	int32_t	idx;
@@ -64,11 +62,12 @@ void	monitor_routine(void *arg)
 			if (has_philo_died(info, idx))
 			{
 				log_death(info, idx);
-				break ;
+				return (NULL);
 			}
 			idx++;
 		}
 		if (have_philos_eaten(info))
 			break ;
 	}
+	return (NULL);
 }

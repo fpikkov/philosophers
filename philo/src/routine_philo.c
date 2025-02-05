@@ -35,7 +35,8 @@ static void	start_eating(t_philo *philo)
 	{
 		grab_forks(&philo->halt, philo->right_fork, philo->left_fork);
 		log_event(philo, EATING);
-		usleep(philo->eat_time);
+		sleep_for_ms(philo->eat_time);
+		philo->timer_last_meal = time_in_ms();
 		if (philo->eat_amount > 0)
 			philo->eat_amount--;
 		pthread_mutex_unlock(philo->right_fork);
@@ -45,7 +46,8 @@ static void	start_eating(t_philo *philo)
 	{
 		grab_forks(&philo->halt, philo->left_fork, philo->right_fork);
 		log_event(philo, EATING);
-		usleep(philo->eat_time);
+		sleep_for_ms(philo->eat_time);
+		philo->timer_last_meal = time_in_ms();
 		if (philo->eat_amount > 0)
 			philo->eat_amount--;
 		pthread_mutex_unlock(philo->left_fork);
@@ -53,16 +55,18 @@ static void	start_eating(t_philo *philo)
 	}
 }
 
-void	philo_routine(void *arg)
+void	*philo_routine(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	gettimeofday(&philo->death_time, NULL);
+	philo->timer_last_meal = time_in_ms();
 	while (!philo->halt)
 	{
-		// TODO: Philo subroutine
-		// TODO: Call start_eating
-		// TODO: Put the reest of mutex locks inside of while loops
+		log_event(philo, THINKING);
+		start_eating(philo);
+		log_event(philo, SLEEPING);
+		sleep_for_ms(philo->sleep_time);
 	}
+	return (NULL);
 }

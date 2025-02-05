@@ -19,8 +19,8 @@ bool	start_routines(t_info *info)
 	idx = 0;
 	if (!info)
 		return (false);
-	if (pthread_create(&info->monitor, NULL,
-			monitor_routine, (void*)info) != 0)
+	if (pthread_create(&info->monitor, NULL, \
+	monitor_routine, (void *)info) != 0)
 		return (false);
 	while (idx < info->count)
 	{

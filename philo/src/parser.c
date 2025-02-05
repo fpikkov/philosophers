@@ -15,23 +15,19 @@
 static int	philo_atoi(const char *str)
 {
 	long	nbr;
-	int		sign;
 
 	nbr = 0;
-	sign = 1;
 	while ((*str >= 9 && *str <= 13) || *str == ' ')
 		str++;
 	if (*str == '-' || *str == '+')
 		if (*str++ == '-')
-			sign *= -1;
-	while (*str >= '0' && *str <= '9' && (!(nbr > INT_MAX) || !(nbr < INT_MIN)))
+			return (0);
+	while (*str >= '0' && *str <= '9' && !(nbr > INT_MAX))
 	{
 		nbr = nbr * 10 + (*str - '0');
 		str++;
 	}
-	if (sign == -1 && !(nbr > 2147483648L))
-		nbr *= sign;
-	if (nbr > INT_MAX || nbr < INT_MIN || *str != '\0')
+	if (nbr > INT_MAX || *str != '\0')
 		return (0);
 	return ((int)nbr);
 }

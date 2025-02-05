@@ -58,7 +58,7 @@ typedef enum e_state
  * @param eat_time the time it takes for a philo to eat
  * @param sleep_time the time it takes for a philo to sleep
  * @param eat_amount optional, the times each philo has to eat
- * @param timer_last_meal time elapsed since last meal
+ * @param timer_last_meal timestamp of previous meal
  */
 typedef struct s_philo
 {
@@ -73,7 +73,7 @@ typedef struct s_philo
 	pthread_mutex_t	*printing;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*left_fork;
-	struct timeval	timer_last_meal;
+	int32_t			timer_last_meal;
 }					t_philo;
 
 /**
@@ -105,14 +105,17 @@ bool	init_mutexes(t_info *info);
 
 // --- Routine functions ---
 
-void	monitor_routine(void *arg);
-void	philo_routine(void *arg);
+void	*monitor_routine(void *arg);
+void	*philo_routine(void *arg);
+bool	start_routines(t_info *info);
 
 // --- Logging functions ---
 
 int		print_error(t_error error);
 void	log_death(t_info *info, int32_t num);
 void	log_event(t_philo *philo, t_state state);
+int32_t	time_in_ms(void);
+void	sleep_for_ms(int32_t msec);
 
 // --- Cleanup functions ---
 
