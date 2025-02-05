@@ -12,9 +12,9 @@
 
 #include "philo.h"
 
-static int	philo_atoi(const char *str)
+static size_t	philo_atoi(const char *str)
 {
-	long	nbr;
+	size_t	nbr;
 
 	nbr = 0;
 	while ((*str >= 9 && *str <= 13) || *str == ' ')
@@ -29,10 +29,10 @@ static int	philo_atoi(const char *str)
 	}
 	if (nbr > INT_MAX || *str != '\0')
 		return (0);
-	return ((int)nbr);
+	return (nbr);
 }
 
-static bool	init_philo(t_info *info, int32_t idx, int argc, char **argv)
+static bool	init_philo(t_info *info, size_t idx, int argc, char **argv)
 {
 	info->philos[idx].id = idx;
 	info->philos[idx].death_time = philo_atoi(argv[2]);
@@ -43,7 +43,7 @@ static bool	init_philo(t_info *info, int32_t idx, int argc, char **argv)
 		return (false);
 	if (argc == 6)
 	{
-		info->philos[idx].eat_amount = philo_atoi(argv[5]);
+		info->philos[idx].eat_amount = (int32_t)philo_atoi(argv[5]);
 		if (info->philos[idx].eat_amount < 1)
 			return (false);
 	}
@@ -54,7 +54,7 @@ static bool	init_philo(t_info *info, int32_t idx, int argc, char **argv)
 
 static bool	create_philos(t_info *info, int argc, char **argv)
 {
-	int32_t	idx;
+	size_t	idx;
 
 	idx = 0;
 	info->philos = (t_philo *)malloc(info->count * sizeof(t_philo));

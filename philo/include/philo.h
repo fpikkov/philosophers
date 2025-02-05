@@ -65,15 +65,15 @@ typedef struct s_philo
 	bool			*halt;
 	pthread_t		thread;
 	int32_t			id;
-	int32_t			death_time;
-	int32_t			eat_time;
-	int32_t			sleep_time;
+	size_t			death_time;
+	size_t			eat_time;
+	size_t			sleep_time;
 	int32_t			eat_amount;
 	pthread_mutex_t	*halt_sim;
 	pthread_mutex_t	*printing;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*left_fork;
-	int32_t			timer_last_meal;
+	size_t			timer_last_meal;
 }					t_philo;
 
 /**
@@ -90,7 +90,7 @@ typedef struct s_info
 {
 	bool			halt;
 	pthread_t		monitor;
-	int32_t			count;
+	size_t			count;
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	halt_sim;
@@ -114,7 +114,7 @@ bool	start_routines(t_info *info);
 int		print_error(t_error error);
 void	log_death(t_info *info, int32_t num);
 void	log_event(t_philo *philo, t_state state);
-int32_t	time_in_ms(void);
+size_t	time_in_ms(void);
 void	sleep_for_ms(int32_t msec);
 
 // --- Cleanup functions ---

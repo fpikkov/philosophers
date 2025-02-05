@@ -14,7 +14,7 @@
 
 static bool	has_philo_died(t_info *info, int32_t idx)
 {
-	int32_t			current;
+	size_t	current;
 
 	current = time_in_ms() - info->philos[idx].timer_last_meal;
 	if (current >= info->philos[idx].death_time \
@@ -31,7 +31,7 @@ static bool	has_philo_died(t_info *info, int32_t idx)
 
 static bool	have_philos_eaten(t_info *info)
 {
-	int32_t	idx;
+	size_t	idx;
 
 	idx = 0;
 	if (info->philos[idx].eat_amount == -1)
@@ -51,7 +51,7 @@ static bool	have_philos_eaten(t_info *info)
 void	*monitor_routine(void *arg)
 {
 	t_info	*info;
-	int32_t	idx;
+	size_t	idx;
 
 	info = (t_info *)arg;
 	while (!info->halt)

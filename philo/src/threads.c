@@ -45,7 +45,7 @@ void	set_addresses(t_info *info)
  */
 bool	init_mutexes(t_info *info)
 {
-	int32_t	idx;
+	size_t	idx;
 
 	idx = 0;
 	if (!info)

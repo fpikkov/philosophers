@@ -14,22 +14,26 @@
 
 bool	start_routines(t_info *info)
 {
-	int32_t	idx;
+	size_t	idx;
 
 	idx = 0;
 	if (!info)
-		return (false);
-	if (pthread_create(&info->monitor, NULL, \
-	monitor_routine, (void *)info) != 0)
 		return (false);
 	while (idx < info->count)
 	{
 		if (pthread_create(&info->philos[idx].thread, NULL, \
 		philo_routine, (void *)(&info->philos[idx])) != 0)
 		{
-			destroy_threads(info, idx, true);
+			destroy_threads(info, idx, false);
 			return (false);
 		}
+		idx++;
+	}
+	if (pthread_create(&info->monitor, NULL, \
+	monitor_routine, (void *)info) != 0)
+	{
+		destroy_threads(info, idx, false);
+		return (false);
 	}
 	return (true);
 }

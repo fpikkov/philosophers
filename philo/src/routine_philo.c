@@ -12,17 +12,19 @@
 
 #include "philo.h"
 
-static void	grab_forks(bool **stop, pthread_mutex_t *lf, pthread_mutex_t *rf)
+static void	grab_forks(bool **stop, pthread_mutex_t **lf, pthread_mutex_t **rf)
 {
 	while (!(*stop))
 	{
-		while (pthread_mutex_lock(lf))
+		while (pthread_mutex_lock(*lf))
 			usleep(5);
-		if (pthread_mutex_lock(rf))
+		printf("Left locked\n");
+		if (pthread_mutex_lock(*rf))
 		{
-			pthread_mutex_unlock(lf);
+			pthread_mutex_unlock(*lf);
 			continue ;
 		}
+		printf("Right locked\n");
 		break ;
 	}
 }
@@ -33,7 +35,7 @@ static void	start_eating(t_philo *philo)
 		return ;
 	if (philo->id % 2)
 	{
-		grab_forks(&philo->halt, philo->right_fork, philo->left_fork);
+		grab_forks(&philo->halt, &philo->right_fork, &philo->left_fork);
 		log_event(philo, EATING);
 		sleep_for_ms(philo->eat_time);
 		philo->timer_last_meal = time_in_ms();
@@ -44,7 +46,7 @@ static void	start_eating(t_philo *philo)
 	}
 	else
 	{
-		grab_forks(&philo->halt, philo->left_fork, philo->right_fork);
+		grab_forks(&philo->halt, &philo->left_fork, &philo->right_fork);
 		log_event(philo, EATING);
 		sleep_for_ms(philo->eat_time);
 		philo->timer_last_meal = time_in_ms();
@@ -61,7 +63,7 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	philo->timer_last_meal = time_in_ms();
-	while (!philo->halt)
+	while (!(*philo->halt))
 	{
 		log_event(philo, THINKING);
 		start_eating(philo);
