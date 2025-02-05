@@ -51,10 +51,10 @@ size_t	time_in_ms(void)
  * @brief Takes in time in milliseconds an sleeps for that amount of time.
  * @param[in] msec Time in milliseconds
  */
-void	sleep_for_ms(int32_t msec)
+void	sleep_for_ms(size_t msec)
 {
 	uint32_t	usec;
 
-	usec = ((uint32_t)msec * 1000);
+	usec = (msec * 1000);
 	usleep(usec);
 }

@@ -115,7 +115,7 @@ int		print_error(t_error error);
 void	log_death(t_info *info, int32_t num);
 void	log_event(t_philo *philo, t_state state);
 size_t	time_in_ms(void);
-void	sleep_for_ms(int32_t msec);
+void	sleep_for_ms(size_t msec);
 
 // --- Cleanup functions ---
 
