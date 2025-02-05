@@ -28,6 +28,11 @@ static const char	*error_text(t_error error)
 	return (names[3]);
 }
 
+/**
+ * @brief Prints an error message based on an enum
+ * @param[in] error a value from the t_error enum
+ * @return EXIT_FAILURE in all cases
+ */
 int	print_error(t_error error)
 {
 	printf("%s\n", error_text(error));

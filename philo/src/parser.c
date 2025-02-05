@@ -42,8 +42,8 @@ static bool	init_philo(t_info *info, int32_t idx, int argc, char **argv)
 	info->philos[idx].death_time = philo_atoi(argv[2]);
 	info->philos[idx].eat_time = philo_atoi(argv[3]);
 	info->philos[idx].sleep_time = philo_atoi(argv[4]);
-	if (info->philos[idx].death_time < 1 || info->philos[idx].eat_time < 1
-		|| info->philos[idx].sleep_time < 1)
+	if (info->philos[idx].death_time < 1 || info->philos[idx].eat_time < 1 \
+	|| info->philos[idx].sleep_time < 1)
 		return (false);
 	if (argc == 6)
 	{
@@ -82,13 +82,20 @@ static bool	parse_info(t_info *info, int argc, char **argv)
 	info->count = philo_atoi(argv[1]);
 	if (info->count < 1)
 		return (false);
-	info->forks = (pthread_mutex_t *)malloc
-		(sizeof(pthread_mutex_t) * info->count);
+	info->forks = (pthread_mutex_t *)malloc \
+	(sizeof(pthread_mutex_t) * info->count);
 	if (!info->forks)
 		return (false);
 	return (true);
 }
 
+/**
+ * @brief Parses the given arguments and stores the values in a struct.
+ * Also attempts to build all the philosopher structs.
+ * @param[in] argc Aargument counter from main()
+ * @param[in] argv Argument vector from main()
+ * @return Pointer to t_info type struct on success, otherwise NULL
+ */
 t_info	*parse_args(int argc, char **argv)
 {
 	t_info	*info;

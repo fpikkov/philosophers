@@ -12,6 +12,10 @@
 
 #include "philo.h"
 
+/**
+ * @brief Frees the allocated memory for the program
+ * @param[in] info The master structure of the project
+ */
 void	free_info(t_info *info)
 {
 	if (!info)
@@ -30,6 +34,12 @@ void	free_info(t_info *info)
 	info = NULL;
 }
 
+/**
+ * @brief Destroys mutexes based on flags and up to but not including count
+ * @param[in] info Master structure of the project
+ * @param[in] count How many mutexes to destroy
+ * @param[in] flag Which mutex types to destroy
+ */
 void	destroy_mutexes(t_info *info, int32_t count, t_flags flag)
 {
 	int32_t	idx;
@@ -48,6 +58,12 @@ void	destroy_mutexes(t_info *info, int32_t count, t_flags flag)
 		pthread_mutex_destroy(&info->printing);
 }
 
+/**
+ * @brief Destroys all threads by using pthread_join
+ * @param[in] info Master struct of the project
+ * @param[in] count How many philo threads to kill
+ * @param[in] monitor If monitor thread should be killed
+ */
 void	destroy_threads(t_info *info, int32_t count, bool monitor)
 {
 	int32_t	idx;

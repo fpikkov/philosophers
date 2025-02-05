@@ -18,7 +18,7 @@ void	log_death(t_info *info, int32_t num)
 
 	pthread_mutex_lock(&info->printing);
 	gettimeofday(&tv, NULL);
-	printf("💀 [%ld] \t[%i] died\n",tv.tv_usec, num);
+	printf("💀 [%ld] \t[%i] died\n", tv.tv_usec, num);
 	pthread_mutex_unlock(&info->printing);
 	destroy_threads(info, info->count, true);
 }

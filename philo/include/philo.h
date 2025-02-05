@@ -99,59 +99,25 @@ typedef struct s_info
 
 // --- Setup functions ---
 
-/**
- * @brief Parses the given arguments and stores the values in a struct.
- * Also attempts to build all the philosopher structs.
- * @param[in] argc Aargument counter from main()
- * @param[in] argv Argument vector from main()
- * @return Pointer to t_info type struct on success, otherwise NULL
- */
 t_info	*parse_args(int argc, char **argv);
-
-/**
- * @brief Sets the pointers in t_philo to the adressses in t_info.
- * Right fork is found with the formula: index + N -1 % N.
- * Left fork is found with the formula: index + 1 % N.
- * @param info Master structure of the project
- */
 void	set_addresses(t_info *info);
-
-/**
- * @brief Prints an error message based on an enum
- * @param[in] error a value from the t_error enum
- * @return EXIT_FAILURE in all cases
- */
-int		print_error(t_error error);
-
-/**
- * @brief Initializes all the mutexes.
- * On failure will destroy the previously initialized mutexes.
- * @return true if successful, otherwise false
- */
 bool	init_mutexes(t_info *info);
 
 // --- Routine functions ---
 
+void	monitor_routine(void *arg);
+void	philo_routine(void *arg);
+
+// --- Logging functions ---
+
+int		print_error(t_error error);
 void	log_death(t_info *info, int32_t num);
 void	log_event(t_philo *philo, t_state state);
 
 // --- Cleanup functions ---
 
 void	free_info(t_info *info);
-
-/**
- * @brief Destroys mutexes based on flags and up to but not including count
- * @param[in] info Master structure of the project
- * @param[in] count How many mutexes to destroy
- */
 void	destroy_mutexes(t_info *info, int32_t count, t_flags flag);
-
-/**
- * @brief Destroys all threads by using pthread_join
- * @param[in] info Master struct of the project
- * @param[in] count How many philo threads to kill
- * @param[in] monitor If monitor thread should be killed
- */
-void	destroy_threads(t_info *info, int32_t count, bool monitor)
+void	destroy_threads(t_info *info, int32_t count, bool monitor);
 
 #endif

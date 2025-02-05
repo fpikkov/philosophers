@@ -24,7 +24,11 @@ SRCS =	${SRC_DIR}/main.c \
 		${SRC_DIR}/parser.c \
 		${SRC_DIR}/threads.c \
 		${SRC_DIR}/error.c \
-		${SRC_DIR}/utils.c
+		${SRC_DIR}/utils.c \
+		${SRC_DIR}/logging.c \
+		${SRC_DIR}/routine.c \
+		${SRC_DIR}/routine_monitor.c \
+		${SRC_DIR}/routine_philo.c
 
 OBJS = ${patsubst ${SRC_DIR}/%.c,${OBJ_DIR}/%.o,${SRCS}}
 

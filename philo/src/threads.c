@@ -12,6 +12,12 @@
 
 #include "philo.h"
 
+/**
+ * @brief Sets the pointers in t_philo to the adressses in t_info.
+ * Right fork is found with the formula: index + N -1 % N.
+ * Left fork is found with the formula: index + 1 % N.
+ * @param info Master structure of the project
+ */
 void	set_addresses(t_info *info)
 {
 	int32_t	idx;
@@ -32,6 +38,11 @@ void	set_addresses(t_info *info)
 	}
 }
 
+/**
+ * @brief Initializes all the mutexes.
+ * On failure will destroy the previously initialized mutexes.
+ * @return true if successful, otherwise false
+ */
 bool	init_mutexes(t_info *info)
 {
 	int32_t	idx;
