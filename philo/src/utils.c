@@ -40,9 +40,9 @@ void	free_info(t_info *info)
  * @param[in] count How many mutexes to destroy
  * @param[in] flag Which mutex types to destroy
  */
-void	destroy_mutexes(t_info *info, int32_t count, t_flags flag)
+void	destroy_mutexes(t_info *info, size_t count, t_flags flag)
 {
-	int32_t	idx;
+	size_t	idx;
 
 	idx = 0;
 	if (!info || !count)
@@ -64,9 +64,9 @@ void	destroy_mutexes(t_info *info, int32_t count, t_flags flag)
  * @param[in] count How many philo threads to kill
  * @param[in] monitor If monitor thread should be killed
  */
-void	destroy_threads(t_info *info, int32_t count, bool monitor)
+void	destroy_threads(t_info *info, size_t count, bool monitor)
 {
-	int32_t	idx;
+	size_t	idx;
 
 	idx = 0;
 	if (monitor)
@@ -74,6 +74,22 @@ void	destroy_threads(t_info *info, int32_t count, bool monitor)
 	while (idx < count)
 	{
 		pthread_join(info->philos[idx].thread, NULL);
+		idx++;
+	}
+}
+
+/**
+ * @brief Detaches threads for the purposes of ending the simulation
+ * @param[in] info Master struct of the project
+ */
+void	detach_threads(t_info *info)
+{
+	size_t	idx;
+
+	idx = 0;
+	while (idx < info->count)
+	{
+		pthread_detach(info->philos[idx].thread);
 		idx++;
 	}
 }

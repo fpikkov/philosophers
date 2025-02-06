@@ -12,10 +12,10 @@
 
 #include "philo.h"
 
-void	log_death(t_info *info, int32_t num)
+void	log_death(t_info *info, size_t num)
 {
 	pthread_mutex_lock(&info->printing);
-	printf("💀 <%ld>\t[%i] died\n", time_in_ms(), num);
+	printf("💀 <%ld>\t[%ld] died\n", time_in_ms(), num);
 	pthread_mutex_unlock(&info->printing);
 }
 
@@ -23,13 +23,13 @@ void	log_event(t_philo *philo, t_state state)
 {
 	pthread_mutex_lock(philo->printing);
 	if (state == THINKING && !(*philo->halt))
-		printf("🤔 <%ld>\t[%i] is thinking\n", time_in_ms(),philo->id);
+		printf("🤔 <%ld>\t[%ld] is thinking\n", time_in_ms(),philo->id);
 	else if (state == EATING && !(*philo->halt))
-		printf("😋 <%ld>\t[%i] is eating\n", time_in_ms(), philo->id);
+		printf("😋 <%ld>\t[%ld] is eating\n", time_in_ms(), philo->id);
 	else if (state == SLEEPING && !(*philo->halt))
-		printf("🥱 <%ld>\t[%i] is sleeping\n", time_in_ms(), philo->id);
+		printf("🥱 <%ld>\t[%ld] is sleeping\n", time_in_ms(), philo->id);
 	else if (state == FORK && !(*philo->halt))
-		printf("🍴 <%ld>\t[%i] has taken a fork\n", time_in_ms(), philo->id);
+		printf("🍴 <%ld>\t[%ld] has taken a fork\n", time_in_ms(), philo->id);
 	pthread_mutex_unlock(philo->printing);
 }
 

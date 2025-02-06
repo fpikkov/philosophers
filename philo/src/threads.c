@@ -20,8 +20,8 @@
  */
 void	set_addresses(t_info *info)
 {
-	int32_t	idx;
-	int32_t	count;
+	size_t	idx;
+	size_t	count;
 
 	if (!info || !info->philos)
 		return ;

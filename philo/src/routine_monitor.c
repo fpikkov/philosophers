@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-static bool	has_philo_died(t_info *info, int32_t idx)
+static bool	has_philo_died(t_info *info, size_t idx)
 {
 	size_t	current;
 
@@ -64,6 +64,7 @@ void	*monitor_routine(void *arg)
 			if (has_philo_died(info, idx))
 			{
 				log_death(info, idx);
+				detach_threads(info);
 				return (NULL);
 			}
 			idx++;
@@ -71,5 +72,6 @@ void	*monitor_routine(void *arg)
 		if (have_philos_eaten(info))
 			break ;
 	}
+	detach_threads(info);
 	return (NULL);
 }

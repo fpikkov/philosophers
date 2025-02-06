@@ -69,7 +69,7 @@ typedef struct s_philo
 	bool		*start;
 	bool		*halt;
 	pthread_t	thread;
-	int32_t		id;
+	size_t		id;
 	size_t		death_time;
 	size_t		eat_time;
 	size_t		sleep_time;
@@ -119,7 +119,7 @@ bool	start_routines(t_info *info);
 // --- Logging functions ---
 
 int		print_error(t_error error);
-void	log_death(t_info *info, int32_t num);
+void	log_death(t_info *info, size_t num);
 void	log_event(t_philo *philo, t_state state);
 size_t	time_in_ms(void);
 void	sleep_for_ms(size_t msec);
@@ -127,7 +127,8 @@ void	sleep_for_ms(size_t msec);
 // --- Cleanup functions ---
 
 void	free_info(t_info *info);
-void	destroy_mutexes(t_info *info, int32_t count, t_flags flag);
-void	destroy_threads(t_info *info, int32_t count, bool monitor);
+void	destroy_mutexes(t_info *info, size_t count, t_flags flag);
+void	destroy_threads(t_info *info, size_t count, bool monitor);
+void	detach_threads(t_info *info);
 
 #endif
