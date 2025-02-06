@@ -23,7 +23,7 @@ void	log_event(t_philo *philo, t_state state)
 {
 	pthread_mutex_lock(philo->printing);
 	if (state == THINKING && !(*philo->halt))
-		printf("🤔 <%ld>\t[%ld] is thinking\n", time_in_ms(),philo->id);
+		printf("🤔 <%ld>\t[%ld] is thinking\n", time_in_ms(), philo->id);
 	else if (state == EATING && !(*philo->halt))
 		printf("😋 <%ld>\t[%ld] is eating\n", time_in_ms(), philo->id);
 	else if (state == SLEEPING && !(*philo->halt))

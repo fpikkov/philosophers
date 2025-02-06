@@ -29,7 +29,8 @@ typedef enum e_flags
 	FORKS = 1 << 0,
 	DEAD = 1 << 1,
 	PRINT = 1 << 2,
-	ALL = FORKS | DEAD | PRINT
+	MEAL = 1 << 3,
+	ALL = FORKS | DEAD | PRINT | MEAL
 }	t_flags;
 
 // Enumeration for picking the correct error message.
@@ -55,6 +56,7 @@ typedef pthread_mutex_t	t_mutex;
 
 /**
  * @brief Struct which stores data for each philosopher.
+ * @param start when the simulation should begin
  * @param halt whether the simulation should stop
  * @param thread the thread associated with the philosopher
  * @param id the id of the philosopher
@@ -76,6 +78,7 @@ typedef struct s_philo
 	int32_t		eat_amount;
 	t_mutex		*halt_sim;
 	t_mutex		*printing;
+	t_mutex		*meal;
 	t_mutex		*right_fork;
 	t_mutex		*left_fork;
 	size_t		timer_last_meal;
@@ -102,6 +105,7 @@ typedef struct s_info
 	t_mutex		*forks;
 	t_mutex		halt_sim;
 	t_mutex		printing;
+	t_mutex		meal;
 }				t_info;
 
 // --- Setup functions ---
@@ -129,6 +133,5 @@ void	sleep_for_ms(size_t msec);
 void	free_info(t_info *info);
 void	destroy_mutexes(t_info *info, size_t count, t_flags flag);
 void	destroy_threads(t_info *info, size_t count, bool monitor);
-void	detach_threads(t_info *info);
 
 #endif

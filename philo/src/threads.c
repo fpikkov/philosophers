@@ -33,6 +33,7 @@ void	set_addresses(t_info *info)
 		info->philos[idx].left_fork = &info->forks[(idx + 1) % count];
 		info->philos[idx].halt_sim = &info->halt_sim;
 		info->philos[idx].printing = &info->printing;
+		info->philos[idx].meal = &info->meal;
 		info->philos[idx].halt = &info->halt;
 		info->philos[idx].start = &info->start;
 		idx++;
@@ -61,5 +62,7 @@ bool	init_mutexes(t_info *info)
 		return (destroy_mutexes(info, idx, FORKS), false);
 	if (pthread_mutex_init(&info->printing, NULL) != 0)
 		return (destroy_mutexes(info, idx, FORKS | DEAD), false);
+	if (pthread_mutex_init(&info->meal, NULL) != 0)
+		return (destroy_mutexes(info, idx, FORKS | DEAD | PRINT), false);
 	return (true);
 }

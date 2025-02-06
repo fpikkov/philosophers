@@ -56,6 +56,8 @@ void	destroy_mutexes(t_info *info, size_t count, t_flags flag)
 		pthread_mutex_destroy(&info->halt_sim);
 	if (flag & PRINT)
 		pthread_mutex_destroy(&info->printing);
+	if (flag & MEAL)
+		pthread_mutex_destroy(&info->meal);
 }
 
 /**
@@ -71,25 +73,14 @@ void	destroy_threads(t_info *info, size_t count, bool monitor)
 	idx = 0;
 	if (monitor)
 		pthread_join(info->monitor, NULL);
+	if (count == 1)
+	{
+		pthread_detach(info->philos[idx].thread);
+		return ;
+	}
 	while (idx < count)
 	{
 		pthread_join(info->philos[idx].thread, NULL);
-		idx++;
-	}
-}
-
-/**
- * @brief Detaches threads for the purposes of ending the simulation
- * @param[in] info Master struct of the project
- */
-void	detach_threads(t_info *info)
-{
-	size_t	idx;
-
-	idx = 0;
-	while (idx < info->count)
-	{
-		pthread_detach(info->philos[idx].thread);
 		idx++;
 	}
 }
