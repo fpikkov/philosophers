@@ -46,8 +46,12 @@ typedef enum e_state
 {
 	THINKING = 0,
 	EATING,
-	SLEEPING
+	SLEEPING,
+	FORK
 }	t_state;
+
+// Ease of use type definition
+typedef pthread_mutex_t	t_mutex;
 
 /**
  * @brief Struct which stores data for each philosopher.
@@ -62,22 +66,24 @@ typedef enum e_state
  */
 typedef struct s_philo
 {
-	bool			*halt;
-	pthread_t		thread;
-	int32_t			id;
-	size_t			death_time;
-	size_t			eat_time;
-	size_t			sleep_time;
-	int32_t			eat_amount;
-	pthread_mutex_t	*halt_sim;
-	pthread_mutex_t	*printing;
-	pthread_mutex_t	*right_fork;
-	pthread_mutex_t	*left_fork;
-	size_t			timer_last_meal;
-}					t_philo;
+	bool		*start;
+	bool		*halt;
+	pthread_t	thread;
+	int32_t		id;
+	size_t		death_time;
+	size_t		eat_time;
+	size_t		sleep_time;
+	int32_t		eat_amount;
+	t_mutex		*halt_sim;
+	t_mutex		*printing;
+	t_mutex		*right_fork;
+	t_mutex		*left_fork;
+	size_t		timer_last_meal;
+}				t_philo;
 
 /**
  * @brief Struct for storing variables from the argment vector.
+ * @param start synchronizes all threads
  * @param halt halts the simulation
  * @param monitor the monitor thread which tracks the conditions of philos
  * @param count the amount of philosophers
@@ -88,14 +94,15 @@ typedef struct s_philo
  */
 typedef struct s_info
 {
-	bool			halt;
-	pthread_t		monitor;
-	size_t			count;
-	t_philo			*philos;
-	pthread_mutex_t	*forks;
-	pthread_mutex_t	halt_sim;
-	pthread_mutex_t	printing;
-}					t_info;
+	bool		start;
+	bool		halt;
+	pthread_t	monitor;
+	size_t		count;
+	t_philo		*philos;
+	t_mutex		*forks;
+	t_mutex		halt_sim;
+	t_mutex		printing;
+}				t_info;
 
 // --- Setup functions ---
 

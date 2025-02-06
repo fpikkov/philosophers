@@ -14,7 +14,7 @@
 
 /**
  * @brief Sets the pointers in t_philo to the adressses in t_info.
- * Right fork is found with the formula: index + N -1 % N.
+ * Right fork is found with the formula: index % N.
  * Left fork is found with the formula: index + 1 % N.
  * @param info Master structure of the project
  */
@@ -29,11 +29,12 @@ void	set_addresses(t_info *info)
 	count = info->count;
 	while (idx < count)
 	{
-		info->philos[idx].right_fork = &info->forks[(idx + count - 1) % count];
+		info->philos[idx].right_fork = &info->forks[idx % count];
 		info->philos[idx].left_fork = &info->forks[(idx + 1) % count];
 		info->philos[idx].halt_sim = &info->halt_sim;
 		info->philos[idx].printing = &info->printing;
 		info->philos[idx].halt = &info->halt;
+		info->philos[idx].start = &info->start;
 		idx++;
 	}
 }

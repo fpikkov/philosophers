@@ -74,12 +74,10 @@ static bool	parse_info(t_info *info, int argc, char **argv)
 {
 	if (argc < 5)
 		return (false);
-	info->halt = false;
 	info->count = philo_atoi(argv[1]);
 	if (info->count < 1)
 		return (false);
-	info->forks = (pthread_mutex_t *)malloc \
-	(sizeof(pthread_mutex_t) * info->count);
+	info->forks = (t_mutex *)malloc(sizeof(t_mutex) * info->count);
 	if (!info->forks)
 		return (false);
 	return (true);
@@ -99,6 +97,7 @@ t_info	*parse_args(int argc, char **argv)
 	info = (t_info *)malloc(sizeof(t_info));
 	if (!info)
 		return (NULL);
+	memset(info, 0, sizeof(t_info));
 	if (!parse_info(info, argc, argv))
 		return (free(info), NULL);
 	if (!create_philos(info, argc, argv))

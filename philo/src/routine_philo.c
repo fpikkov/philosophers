@@ -12,21 +12,19 @@
 
 #include "philo.h"
 
-static void	grab_forks(bool **stop, pthread_mutex_t *lf, pthread_mutex_t *rf)
+static void	eat_pasta(t_philo *philo, t_mutex *first, t_mutex *second)
 {
-	while (!(**stop))
-	{
-		if (pthread_mutex_lock(lf) != 0)
-			continue ;
-		printf("lforked\n");
-		if (pthread_mutex_lock(rf) == 0)
-		{
-			printf("Right locked\n");
-			break ;
-		}
-		printf("Unlocking\n");
-		pthread_mutex_unlock(lf);
-	}
+	pthread_mutex_lock(first);
+	log_event(philo, FORK);
+	pthread_mutex_lock(second);
+	log_event(philo, FORK);
+	log_event(philo, EATING);
+	sleep_for_ms(philo->eat_time);
+	philo->timer_last_meal = time_in_ms();
+	if (philo->eat_amount > 0)
+		philo->eat_amount--;
+	pthread_mutex_unlock(first);
+	pthread_mutex_unlock(second);
 }
 
 static void	start_eating(t_philo *philo)
@@ -34,26 +32,11 @@ static void	start_eating(t_philo *philo)
 	if (philo->eat_amount == 0)
 		return ;
 	if (philo->id % 2)
-	{
-		grab_forks(&philo->halt, philo->right_fork, philo->left_fork);
-		log_event(philo, EATING);
-		sleep_for_ms(philo->eat_time);
-		philo->timer_last_meal = time_in_ms();
-		if (philo->eat_amount > 0)
-			philo->eat_amount--;
-		pthread_mutex_unlock(philo->right_fork);
-		pthread_mutex_unlock(philo->left_fork);
-	}
+		eat_pasta(philo, philo->right_fork, philo->left_fork);
 	else
 	{
-		grab_forks(&philo->halt, philo->left_fork, philo->right_fork);
-		log_event(philo, EATING);
-		sleep_for_ms(philo->eat_time);
-		philo->timer_last_meal = time_in_ms();
-		if (philo->eat_amount > 0)
-			philo->eat_amount--;
-		pthread_mutex_unlock(philo->left_fork);
-		pthread_mutex_unlock(philo->right_fork);
+		usleep(5);
+		eat_pasta(philo, philo->left_fork, philo->right_fork);
 	}
 }
 
@@ -62,6 +45,8 @@ void	*philo_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	while (!(*philo->start))
+		continue ;
 	philo->timer_last_meal = time_in_ms();
 	while (!(*philo->halt))
 	{

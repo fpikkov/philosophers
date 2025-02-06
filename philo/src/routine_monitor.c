@@ -54,6 +54,8 @@ void	*monitor_routine(void *arg)
 	size_t	idx;
 
 	info = (t_info *)arg;
+	info->start = true;
+	usleep(5);
 	while (!info->halt)
 	{
 		idx = 0;
