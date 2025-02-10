@@ -46,8 +46,8 @@ void	*philo_routine(void *arg)
 	philo = (t_philo *)arg;
 	while (!(*philo->start))
 		continue ;
-	if (!(philo->id % 2))
-		usleep(1);
+	if (philo->id % 2)
+		usleep(500);
 	philo->timer_last_meal = time_in_ms();
 	while (!(*philo->halt))
 	{
@@ -57,6 +57,7 @@ void	*philo_routine(void *arg)
 		log_event(philo, SLEEPING);
 		sleep_for_ms(philo->sleep_time);
 		log_event(philo, THINKING);
+		sleep_for_ms(philo->think_time);
 	}
 	return (NULL);
 }

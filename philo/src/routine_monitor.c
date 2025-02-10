@@ -23,7 +23,7 @@ static bool	has_philo_died(t_info *info, size_t idx)
 		return (false);
 	}
 	current = time_in_ms() - info->philos[idx].timer_last_meal;
-	if (current >= info->philos[idx].death_time \
+	if (current > info->philos[idx].death_time \
 	&& (info->philos[idx].eat_amount > 0 \
 	|| info->philos[idx].eat_amount == -1))
 	{
@@ -68,7 +68,7 @@ void	*monitor_routine(void *arg)
 
 	info = (t_info *)arg;
 	info->start = true;
-	usleep(5);
+	usleep(500);
 	while (!info->halt)
 	{
 		idx = 0;
@@ -79,6 +79,7 @@ void	*monitor_routine(void *arg)
 				log_death(info, idx);
 				return (NULL);
 			}
+			usleep(100);
 			idx++;
 		}
 		if (have_philos_eaten(info))

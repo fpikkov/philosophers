@@ -41,6 +41,10 @@ static bool	init_philo(t_info *info, size_t idx, int argc, char **argv)
 	if (info->philos[idx].death_time < 1 || info->philos[idx].eat_time < 1 \
 	|| info->philos[idx].sleep_time < 1)
 		return (false);
+	if ((info->philos[idx].eat_time + info->philos[idx].sleep_time) \
+	< info->philos[idx].death_time)
+		info->philos[idx].think_time = (info->philos[idx].death_time \
+		- (info->philos[idx].eat_time + info->philos[idx].sleep_time)) / 2;
 	if (argc == 6)
 	{
 		info->philos[idx].eat_amount = (int32_t)philo_atoi(argv[5]);
@@ -75,7 +79,7 @@ static bool	parse_info(t_info *info, int argc, char **argv)
 	if (argc < 5)
 		return (false);
 	info->count = philo_atoi(argv[1]);
-	if (info->count < 1)
+	if (info->count < 1 || info->count > P_LIMIT)
 		return (false);
 	info->forks = (t_mutex *)malloc(sizeof(t_mutex) * info->count);
 	if (!info->forks)

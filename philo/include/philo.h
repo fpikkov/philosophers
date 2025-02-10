@@ -23,6 +23,9 @@
 # include <limits.h>
 # include <stdbool.h>
 
+// Hard cap on amount of philosophers
+# define P_LIMIT 500
+
 // Enumeration for destroying specific mutexes
 typedef enum e_flags
 {
@@ -63,6 +66,7 @@ typedef pthread_mutex_t	t_mutex;
  * @param death_time the time it takes for a philo to die
  * @param eat_time the time it takes for a philo to eat
  * @param sleep_time the time it takes for a philo to sleep
+ * @param think_time the time it takes for a philo to think
  * @param eat_amount optional, the times each philo has to eat
  * @param timer_last_meal timestamp of previous meal
  */
@@ -75,6 +79,7 @@ typedef struct s_philo
 	size_t		death_time;
 	size_t		eat_time;
 	size_t		sleep_time;
+	size_t		think_time;
 	int32_t		eat_amount;
 	t_mutex		*halt_sim;
 	t_mutex		*printing;

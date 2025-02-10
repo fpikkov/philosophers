@@ -51,8 +51,11 @@ size_t	time_in_ms(void)
  */
 void	sleep_for_ms(size_t msec)
 {
-	uint32_t	usec;
+	size_t	start;
 
-	usec = (msec * 1000);
-	usleep(usec);
+	if (msec == 0)
+		return ;
+	start = time_in_ms();
+	while (time_in_ms() - start < msec)
+		usleep(50);
 }
