@@ -1,11 +1,13 @@
-#PHILOSOPHERS
+# PHILOSOPHERS
 
-##<ins>OVERVIEW</ins>
+## <ins>OVERVIEW</ins>
+
 This project tackles the classical Dining Philosopher's Problem utilizing threads and mutexes (mutual exclusions) written in the C programming language.
 The project attempts to avoid common pitfalls such as deadlocks and race condiitons. The goal is to simulate a scneario where a given number of philosophers sit around a table and alternate between eating, sleeping and thinking.
 Each philosopher will attempt to pick up forks (mutexes) and eat their meal for a given amount of time in milliseconds before continuing with their cycles.
 
-##<ins>USAGE</ins>
+## <ins>USAGE</ins>
+
 Download the repository to your system:
 ```
 git clone https://github.com/fpikkov/philosophers.git
