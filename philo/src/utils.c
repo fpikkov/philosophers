@@ -30,6 +30,8 @@ void	free_info(t_info *info)
 		free(info->forks);
 		info->forks = NULL;
 	}
+	if (info->meals)
+		free(info->meals);
 	free(info);
 	info = NULL;
 }
@@ -57,7 +59,14 @@ void	destroy_mutexes(t_info *info, size_t count, t_flags flag)
 	if (flag & PRINT)
 		pthread_mutex_destroy(&info->printing);
 	if (flag & MEAL)
-		pthread_mutex_destroy(&info->meal);
+	{
+		idx = 0;
+		while (idx < info->meal_mutexes)
+		{
+			pthread_mutex_destroy(&info->meals[idx]);
+			idx++;
+		}
+	}
 }
 
 /**

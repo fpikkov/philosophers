@@ -39,6 +39,20 @@ static void	start_eating(t_philo *philo)
 		eat_pasta(philo, philo->left_fork, philo->right_fork);
 }
 
+static bool	check_end(t_philo *philo)
+{
+	if (!philo)
+		return (true);
+	pthread_mutex_lock(philo->halt_sim);
+	if (*philo->halt == true)
+	{
+		pthread_mutex_unlock(philo->halt_sim);
+		return (true);
+	}
+	pthread_mutex_unlock(philo->halt_sim);
+	return (false);
+}
+
 void	*philo_routine(void *arg)
 {
 	t_philo	*philo;
@@ -49,15 +63,19 @@ void	*philo_routine(void *arg)
 	if (philo->id % 2)
 		usleep(500);
 	philo->timer_last_meal = time_in_ms();
-	while (!(*philo->halt))
+	while (true)
 	{
 		start_eating(philo);
-		if (*philo->halt)
+		if (check_end(philo))
 			return (NULL);
 		log_event(philo, SLEEPING);
 		sleep_for_ms(philo->sleep_time);
+		if (check_end(philo))
+			return (NULL);
 		log_event(philo, THINKING);
 		sleep_for_ms(philo->think_time);
+		if (check_end(philo))
+			return (NULL);
 	}
 	return (NULL);
 }

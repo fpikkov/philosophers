@@ -106,11 +106,12 @@ typedef struct s_info
 	bool		halt;
 	pthread_t	monitor;
 	size_t		count;
+	size_t		meal_mutexes;
 	t_philo		*philos;
 	t_mutex		*forks;
 	t_mutex		halt_sim;
 	t_mutex		printing;
-	t_mutex		meal;
+	t_mutex		*meals;
 }				t_info;
 
 // --- Setup functions ---

@@ -33,11 +33,36 @@ void	set_addresses(t_info *info)
 		info->philos[idx].left_fork = &info->forks[(idx + 1) % count];
 		info->philos[idx].halt_sim = &info->halt_sim;
 		info->philos[idx].printing = &info->printing;
-		info->philos[idx].meal = &info->meal;
+		info->philos[idx].meal = &info->meals[(idx / 10)];
 		info->philos[idx].halt = &info->halt;
 		info->philos[idx].start = &info->start;
 		idx++;
 	}
+}
+
+static bool	init_meals(t_info *info)
+{
+	size_t	idx;
+
+	if (!info)
+		return (false);
+	idx = 0;
+	while (idx < info->meal_mutexes)
+	{
+		if (pthread_mutex_init(&info->meals[idx], NULL) != 0)
+		{
+			while (idx > 0)
+			{
+				pthread_mutex_destroy(&info->meals[idx]);
+				idx--;
+			}
+			if (idx == 0)
+				pthread_mutex_destroy(&info->meals[idx]);
+			return (false);
+		}
+		idx++;
+	}
+	return (true);
 }
 
 /**
@@ -62,7 +87,7 @@ bool	init_mutexes(t_info *info)
 		return (destroy_mutexes(info, idx, FORKS), false);
 	if (pthread_mutex_init(&info->printing, NULL) != 0)
 		return (destroy_mutexes(info, idx, FORKS | DEAD), false);
-	if (pthread_mutex_init(&info->meal, NULL) != 0)
+	if (!init_meals(info))
 		return (destroy_mutexes(info, idx, FORKS | DEAD | PRINT), false);
 	return (true);
 }
