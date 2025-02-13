@@ -72,22 +72,23 @@ typedef pthread_mutex_t	t_mutex;
  */
 typedef struct s_philo
 {
-	bool		*start;
-	bool		*halt;
-	pthread_t	thread;
-	size_t		id;
-	size_t		death_time;
-	size_t		eat_time;
-	size_t		sleep_time;
-	size_t		think_time;
-	int32_t		eat_amount;
-	t_mutex		*halt_sim;
-	t_mutex		*printing;
-	t_mutex		*meal;
-	t_mutex		*right_fork;
-	t_mutex		*left_fork;
-	size_t		timer_last_meal;
-}				t_philo;
+	_Atomic bool		*start;
+	_Atomic bool		*halt;
+	pthread_t		thread;
+	size_t			id;
+	size_t			death_time;
+	size_t			eat_time;
+	size_t			sleep_time;
+	size_t			think_time;
+	size_t			start_time;
+	int32_t			eat_amount;
+	t_mutex			*halt_sim;
+	t_mutex			*printing;
+	t_mutex			*meal;
+	t_mutex			*right_fork;
+	t_mutex			*left_fork;
+	size_t			timer_last_meal;
+}					t_philo;
 
 /**
  * @brief Struct for storing variables from the argment vector.
@@ -102,17 +103,18 @@ typedef struct s_philo
  */
 typedef struct s_info
 {
-	bool		start;
-	bool		halt;
-	pthread_t	monitor;
-	size_t		count;
-	size_t		meal_mutexes;
-	t_philo		*philos;
-	t_mutex		*forks;
-	t_mutex		halt_sim;
-	t_mutex		printing;
-	t_mutex		*meals;
-}				t_info;
+	_Atomic bool	start;
+	_Atomic bool	halt;
+	bool			should_eat;
+	size_t			count;
+	size_t			meal_mutexes;
+	size_t			start_time;
+	t_philo			*philos;
+	t_mutex			*forks;
+	t_mutex			halt_sim;
+	t_mutex			printing;
+	t_mutex			*meals;
+}					t_info;
 
 // --- Setup functions ---
 
@@ -122,7 +124,7 @@ bool	init_mutexes(t_info *info);
 
 // --- Routine functions ---
 
-void	*monitor_routine(void *arg);
+void	monitor_routine(t_info *info);
 void	*philo_routine(void *arg);
 bool	start_routines(t_info *info);
 
@@ -131,13 +133,13 @@ bool	start_routines(t_info *info);
 int		print_error(t_error error);
 void	log_death(t_info *info, size_t num);
 void	log_event(t_philo *philo, t_state state);
-size_t	time_in_ms(void);
-void	sleep_for_ms(size_t msec);
+size_t	time_in_ms(size_t start);
+void	sleep_for_ms(size_t begin, size_t msec);
 
 // --- Cleanup functions ---
 
 void	free_info(t_info *info);
 void	destroy_mutexes(t_info *info, size_t count, t_flags flag);
-void	destroy_threads(t_info *info, size_t count, bool monitor);
+void	destroy_threads(t_info *info, size_t count);
 
 #endif

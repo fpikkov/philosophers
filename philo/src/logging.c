@@ -15,7 +15,7 @@
 void	log_death(t_info *info, size_t num)
 {
 	pthread_mutex_lock(&info->printing);
-	printf("💀 <%ld>\t[%ld] died\n", time_in_ms(), num);
+	printf("💀 %-16ld\t[%ld] died\n", time_in_ms(info->start_time), num);
 	pthread_mutex_unlock(&info->printing);
 }
 
@@ -23,39 +23,47 @@ void	log_event(t_philo *philo, t_state state)
 {
 	pthread_mutex_lock(philo->printing);
 	if (state == THINKING && !(*philo->halt))
-		printf("🤔 <%ld>\t[%ld] is thinking\n", time_in_ms(), philo->id);
+		printf("🤔 %-16ld\t[%ld] is thinking\n", \
+		time_in_ms(philo->start_time), philo->id);
 	else if (state == EATING && !(*philo->halt))
-		printf("😋 <%ld>\t[%ld] is eating\n", time_in_ms(), philo->id);
+		printf("😋 %-16ld\t[%ld] is eating\n", \
+		time_in_ms(philo->start_time), philo->id);
 	else if (state == SLEEPING && !(*philo->halt))
-		printf("🥱 <%ld>\t[%ld] is sleeping\n", time_in_ms(), philo->id);
+		printf("🥱 %-16ld\t[%ld] is sleeping\n", \
+		time_in_ms(philo->start_time), philo->id);
 	else if (state == FORK && !(*philo->halt))
-		printf("🍴 <%ld>\t[%ld] has taken a fork\n", time_in_ms(), philo->id);
+		printf("🍴 %-16ld\t[%ld] has taken a fork\n", \
+		time_in_ms(philo->start_time), philo->id);
 	pthread_mutex_unlock(philo->printing);
 }
 
 /**
  * @brief Converts the microsecond time to millisecond time.
+ * @param[in] start the starting time of the simulation
  * @return Current time in unsigned long representation of milliseconds.
  */
-size_t	time_in_ms(void)
+size_t	time_in_ms(size_t start)
 {
 	struct timeval	tv;
+	size_t			time;
 
 	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+	time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+	return (time - start);
 }
 
 /**
  * @brief Takes in time in milliseconds an sleeps for that amount of time.
+ * @param[in] begin Time since the beginning of the simulation
  * @param[in] msec Time in milliseconds
  */
-void	sleep_for_ms(size_t msec)
+void	sleep_for_ms(size_t begin, size_t msec)
 {
 	size_t	start;
 
-	if (msec == 0)
+	if (msec == 0 || begin == 0)
 		return ;
-	start = time_in_ms();
-	while (time_in_ms() - start < msec)
+	start = time_in_ms(begin);
+	while (time_in_ms(begin) - start < msec)
 		usleep(50);
 }

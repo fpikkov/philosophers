@@ -27,7 +27,7 @@ int	main(int argc, char **argv)
 		return (print_error(THREAD_FAILURE));
 	}
 	if (start_routines(info) == true)
-		destroy_threads(info, info->count, true);
+		destroy_threads(info, info->count);
 	destroy_mutexes(info, info->count, ALL);
 	if (info)
 		free_info(info);

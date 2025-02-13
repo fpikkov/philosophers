@@ -22,7 +22,7 @@ static bool	has_philo_died(t_info *info, size_t idx)
 		pthread_mutex_unlock(&info->meals[idx / 10]);
 		return (false);
 	}
-	current = time_in_ms() - info->philos[idx].timer_last_meal;
+	current = time_in_ms(info->start_time) - info->philos[idx].timer_last_meal;
 	if (current > info->philos[idx].death_time \
 	&& (info->philos[idx].eat_amount > 0 \
 	|| info->philos[idx].eat_amount == -1))
@@ -42,7 +42,7 @@ static bool	have_philos_eaten(t_info *info)
 	size_t	idx;
 
 	idx = 0;
-	if (info->philos[idx].eat_amount == -1)
+	if (!(info->should_eat))
 		return (false);
 	while (idx < info->count)
 	{
@@ -61,12 +61,10 @@ static bool	have_philos_eaten(t_info *info)
 	return (true);
 }
 
-void	*monitor_routine(void *arg)
+void	monitor_routine(t_info *info)
 {
-	t_info	*info;
 	size_t	idx;
 
-	info = (t_info *)arg;
 	info->start = true;
 	usleep(500);
 	while (true)
@@ -77,12 +75,11 @@ void	*monitor_routine(void *arg)
 			if (has_philo_died(info, idx))
 			{
 				log_death(info, idx);
-				return (NULL);
+				return ;
 			}
 			idx++;
 		}
 		if (have_philos_eaten(info))
 			break ;
 	}
-	return (NULL);
 }

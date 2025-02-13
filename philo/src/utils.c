@@ -73,15 +73,12 @@ void	destroy_mutexes(t_info *info, size_t count, t_flags flag)
  * @brief Destroys all threads by using pthread_join
  * @param[in] info Master struct of the project
  * @param[in] count How many philo threads to kill
- * @param[in] monitor If monitor thread should be killed
  */
-void	destroy_threads(t_info *info, size_t count, bool monitor)
+void	destroy_threads(t_info *info, size_t count)
 {
 	size_t	idx;
 
 	idx = 0;
-	if (monitor)
-		pthread_join(info->monitor, NULL);
 	if (count == 1)
 	{
 		pthread_detach(info->philos[idx].thread);

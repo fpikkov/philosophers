@@ -100,7 +100,8 @@ static bool	parse_info(t_info *info, int argc, char **argv)
  */
 t_info	*parse_args(int argc, char **argv)
 {
-	t_info	*info;
+	t_info			*info;
+	struct timeval	tv;
 
 	info = (t_info *)malloc(sizeof(t_info));
 	if (!info)
@@ -110,6 +111,10 @@ t_info	*parse_args(int argc, char **argv)
 		return (free(info), NULL);
 	if (!create_philos(info, argc, argv))
 		return (free_info(info), NULL);
+	if (info->philos[0].eat_amount > 0)
+		info->should_eat = true;
+	gettimeofday(&tv, NULL);
+	info->start_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 	set_addresses(info);
 	return (info);
 }

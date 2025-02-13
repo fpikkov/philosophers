@@ -24,16 +24,11 @@ bool	start_routines(t_info *info)
 		if (pthread_create(&info->philos[idx].thread, NULL, \
 		philo_routine, (void *)(&info->philos[idx])) != 0)
 		{
-			destroy_threads(info, idx, false);
+			destroy_threads(info, idx);
 			return (false);
 		}
 		idx++;
 	}
-	if (pthread_create(&info->monitor, NULL, \
-	monitor_routine, (void *)info) != 0)
-	{
-		destroy_threads(info, idx, false);
-		return (false);
-	}
+	monitor_routine(info);
 	return (true);
 }
