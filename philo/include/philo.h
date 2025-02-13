@@ -72,8 +72,8 @@ typedef pthread_mutex_t	t_mutex;
  */
 typedef struct s_philo
 {
-	_Atomic bool		*start;
-	_Atomic bool		*halt;
+	_Atomic bool	*start;
+	_Atomic bool	*halt;
 	pthread_t		thread;
 	size_t			id;
 	size_t			death_time;
