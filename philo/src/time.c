@@ -20,9 +20,10 @@
  */
 size_t	time_in_ms(size_t start)
 {
-	struct timeval	tv;
-	size_t			time;
+	t_time	tv;
+	size_t	time;
 
+	memset(&tv, 0, sizeof(t_time));
 	gettimeofday(&tv, NULL);
 	time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 	if (start != 0)

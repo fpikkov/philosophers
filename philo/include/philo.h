@@ -61,6 +61,7 @@ typedef enum e_state
 
 // Ease of use type definition
 typedef pthread_mutex_t	t_mutex;
+typedef struct timeval	t_time;
 
 /**
  * @brief Struct which stores data for each philosopher.
