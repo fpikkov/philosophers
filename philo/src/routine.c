@@ -12,6 +12,29 @@
 
 #include "philo.h"
 
+static bool	thread_create(t_info *info, size_t idx)
+{
+	if (info->count == 1)
+	{
+		if (pthread_create(&info->philos[idx].thread, NULL, \
+		philo_single, (void *)(&info->philos[idx])) != 0)
+		{
+			destroy_threads(info, idx);
+			return (false);
+		}
+	}
+	else
+	{
+		if (pthread_create(&info->philos[idx].thread, NULL, \
+		philo_routine, (void *)(&info->philos[idx])) != 0)
+		{
+			destroy_threads(info, idx);
+			return (false);
+		}
+	}
+	return (true);
+}
+
 bool	start_routines(t_info *info)
 {
 	size_t	idx;
@@ -21,12 +44,8 @@ bool	start_routines(t_info *info)
 		return (false);
 	while (idx < info->count)
 	{
-		if (pthread_create(&info->philos[idx].thread, NULL, \
-		philo_routine, (void *)(&info->philos[idx])) != 0)
-		{
-			destroy_threads(info, idx);
+		if (!thread_create(info, idx))
 			return (false);
-		}
 		idx++;
 	}
 	monitor_routine(info);

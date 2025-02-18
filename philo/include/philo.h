@@ -55,7 +55,8 @@ typedef enum e_state
 	THINKING = 0,
 	EATING,
 	SLEEPING,
-	FORK
+	FORK,
+	DEATH
 }	t_state;
 
 // Ease of use type definition
@@ -85,7 +86,7 @@ typedef struct s_philo
 	size_t			sleep_time;
 	size_t			think_time;
 	size_t			start_time;
-	int32_t			eat_amount;
+	_Atomic int32_t	eat_amount;
 	t_mutex			*halt_sim;
 	t_mutex			*printing;
 	t_mutex			*meal;
@@ -130,15 +131,19 @@ bool	init_mutexes(t_info *info);
 
 void	monitor_routine(t_info *info);
 void	*philo_routine(void *arg);
+void	*philo_single(void *arg);
 bool	start_routines(t_info *info);
+
+// --- Mutex functions ---
+
+bool	safe_unlock(t_mutex *mtx, bool ret);
 
 // --- Logging functions ---
 
 int		print_error(t_error error);
-void	log_death(t_info *info, size_t num);
 void	log_event(t_philo *philo, t_state state);
 size_t	time_in_ms(size_t start);
-void	sleep_for_ms(size_t begin, size_t msec, _Atomic bool *halt);
+void	sleep_for_ms(size_t msec, _Atomic bool *halt);
 
 // --- Cleanup functions ---
 

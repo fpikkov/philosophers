@@ -49,7 +49,6 @@ void	set_addresses(t_info *info)
 		info->philos[idx].meal = &info->meals[(idx / 10)];
 		info->philos[idx].halt = &info->halt;
 		info->philos[idx].start = &info->start;
-		info->philos[idx].start_time = info->start_time;
 		idx++;
 	}
 }

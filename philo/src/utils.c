@@ -79,14 +79,15 @@ void	destroy_threads(t_info *info, size_t count)
 	size_t	idx;
 
 	idx = 0;
-	if (count == 1)
-	{
-		pthread_detach(info->philos[idx].thread);
-		return ;
-	}
 	while (idx < count)
 	{
 		pthread_join(info->philos[idx].thread, NULL);
 		idx++;
 	}
+}
+
+bool	safe_unlock(t_mutex *mtx, bool ret)
+{
+	pthread_mutex_unlock(mtx);
+	return (ret);
 }

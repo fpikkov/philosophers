@@ -19,12 +19,12 @@ static void	eat_pasta(t_philo *philo, t_mutex *first, t_mutex *second)
 	pthread_mutex_lock(second);
 	log_event(philo, FORK);
 	pthread_mutex_lock(philo->meal);
-	philo->timer_last_meal = time_in_ms(philo->start_time);
+	philo->timer_last_meal = time_in_ms(0);
 	if (philo->eat_amount > 0)
 		philo->eat_amount--;
 	pthread_mutex_unlock(philo->meal);
 	log_event(philo, EATING);
-	sleep_for_ms(philo->start_time, philo->eat_time, philo->halt);
+	sleep_for_ms(philo->eat_time, philo->halt);
 	pthread_mutex_unlock(second);
 	pthread_mutex_unlock(first);
 }
@@ -36,17 +36,19 @@ static bool	philo_life(t_philo *philo)
 {
 	if (*philo->halt == true)
 		return (true);
+	pthread_mutex_lock(philo->meal);
 	if (philo->eat_amount == 0)
-		return (false);
+		return (safe_unlock(philo->meal, false));
+	pthread_mutex_unlock(philo->meal);
 	eat_pasta(philo, philo->left_fork, philo->right_fork);
 	if (*philo->halt == true)
 		return (true);
 	log_event(philo, SLEEPING);
-	sleep_for_ms(philo->start_time, philo->sleep_time, philo->halt);
+	sleep_for_ms(philo->sleep_time, philo->halt);
 	if (*philo->halt == true)
 		return (true);
 	log_event(philo, THINKING);
-	sleep_for_ms(philo->start_time, philo->think_time, philo->halt);
+	sleep_for_ms(philo->think_time, philo->halt);
 	if (*philo->halt == true)
 		return (true);
 	return (false);
@@ -62,17 +64,35 @@ void	*philo_routine(void *arg)
 	if (philo->id % 2)
 	{
 		if (philo->think_time != 0)
-			sleep_for_ms(philo->start_time, (philo->think_time / 2), philo->halt);
+			sleep_for_ms((philo->think_time / 2), philo->halt);
 		else
 			usleep(500);
 	}
 	pthread_mutex_lock(philo->meal);
-	philo->timer_last_meal = time_in_ms(philo->start_time);
+	philo->timer_last_meal = time_in_ms(0);
 	pthread_mutex_unlock(philo->meal);
 	while (true)
 	{
 		if (philo_life(philo))
 			break ;
 	}
+	return (NULL);
+}
+
+void	*philo_single(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
+	while (!(*philo->start))
+		continue ;
+	pthread_mutex_lock(philo->meal);
+	philo->timer_last_meal = time_in_ms(0);
+	pthread_mutex_unlock(philo->meal);
+	pthread_mutex_lock(philo->left_fork);
+	log_event(philo, FORK);
+	pthread_mutex_unlock(philo->left_fork);
+	while (*philo->halt == false)
+		usleep(50);
 	return (NULL);
 }

@@ -6,5 +6,6 @@
 *.exe
 *.out
 *.o
+.vscode/
 /*/build
 /*/obj

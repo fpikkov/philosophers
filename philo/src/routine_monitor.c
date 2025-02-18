@@ -18,11 +18,8 @@ static bool	has_philo_died(t_info *info, size_t idx)
 
 	pthread_mutex_lock(&info->meals[idx / 10]);
 	if (info->philos[idx].timer_last_meal == 0)
-	{
-		pthread_mutex_unlock(&info->meals[idx / 10]);
-		return (false);
-	}
-	current = time_in_ms(info->start_time) - info->philos[idx].timer_last_meal;
+		return (safe_unlock(&info->meals[idx / 10], false));
+	current = time_in_ms(0) - info->philos[idx].timer_last_meal;
 	if (current > info->philos[idx].death_time \
 	&& (info->philos[idx].eat_amount > 0 \
 	|| info->philos[idx].eat_amount == -1))
@@ -30,11 +27,9 @@ static bool	has_philo_died(t_info *info, size_t idx)
 		pthread_mutex_lock(&info->halt_sim);
 		info->halt = true;
 		pthread_mutex_unlock(&info->halt_sim);
-		pthread_mutex_unlock(&info->meals[idx / 10]);
-		return (true);
+		return (safe_unlock(&info->meals[idx / 10], true));
 	}
-	pthread_mutex_unlock(&info->meals[idx / 10]);
-	return (false);
+	return (safe_unlock(&info->meals[idx / 10], false));
 }
 
 static bool	have_philos_eaten(t_info *info)
@@ -48,23 +43,32 @@ static bool	have_philos_eaten(t_info *info)
 	{
 		pthread_mutex_lock(&info->meals[idx / 10]);
 		if (info->philos[idx].eat_amount > 0)
-		{
-			pthread_mutex_unlock(&info->meals[idx / 10]);
-			return (false);
-		}
+			return (safe_unlock(&info->meals[idx / 10], false));
 		pthread_mutex_unlock(&info->meals[idx / 10]);
 		idx++;
 	}
 	pthread_mutex_lock(&info->halt_sim);
 	info->halt = true;
-	pthread_mutex_unlock(&info->halt_sim);
-	return (true);
+	return (safe_unlock(&info->halt_sim, true));
+}
+
+static void	set_start_time(t_info *info)
+{
+	size_t	start;
+	size_t	idx;
+
+	idx = 0;
+	start = time_in_ms(0);
+	info->start_time = start;
+	while (idx < info->count)
+		info->philos[idx++].start_time = start;
 }
 
 void	monitor_routine(t_info *info)
 {
 	size_t	idx;
 
+	set_start_time(info);
 	info->start = true;
 	usleep(500);
 	while (true)
@@ -74,7 +78,7 @@ void	monitor_routine(t_info *info)
 		{
 			if (has_philo_died(info, idx))
 			{
-				log_death(info, idx);
+				log_event(&info->philos[idx], DEATH);
 				return ;
 			}
 			idx++;
