@@ -23,6 +23,10 @@
 # include <limits.h>
 # include <stdbool.h>
 
+# ifndef DEBUG
+#  define DEBUG 0
+# endif
+
 // Hard cap on amount of philosophers
 # define P_LIMIT 500
 
@@ -134,7 +138,7 @@ int		print_error(t_error error);
 void	log_death(t_info *info, size_t num);
 void	log_event(t_philo *philo, t_state state);
 size_t	time_in_ms(size_t start);
-void	sleep_for_ms(size_t begin, size_t msec);
+void	sleep_for_ms(size_t begin, size_t msec, _Atomic bool *halt);
 
 // --- Cleanup functions ---
 

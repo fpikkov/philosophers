@@ -1,0 +1,10 @@
+*.swp
+*.TMP
+.~
+*.so
+*.dll
+*.exe
+*.out
+*.o
+/*/build
+/*/obj
