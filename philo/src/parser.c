@@ -44,7 +44,7 @@ static bool	init_philo(t_info *info, size_t idx, int argc, char **argv)
 	if ((info->philos[idx].eat_time + info->philos[idx].sleep_time) \
 	< info->philos[idx].death_time)
 		info->philos[idx].think_time = (info->philos[idx].death_time \
-		- (info->philos[idx].eat_time + info->philos[idx].sleep_time)) / 2;
+		- (info->philos[idx].eat_time + info->philos[idx].sleep_time)) / 4;
 	if (argc == 6)
 	{
 		info->philos[idx].eat_amount = (int32_t)philo_atoi(argv[5]);
