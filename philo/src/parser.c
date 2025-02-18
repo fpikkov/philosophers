@@ -84,8 +84,7 @@ static bool	parse_info(t_info *info, int argc, char **argv)
 	info->forks = (t_mutex *)malloc(sizeof(t_mutex) * info->count);
 	if (!info->forks)
 		return (false);
-	info->meal_mutexes = (info->count / 10) + 1;
-	info->meals = (t_mutex *)malloc(sizeof(t_mutex) * info->meal_mutexes);
+	info->meals = (t_mutex *)malloc(sizeof(t_mutex) * info->count);
 	if (!info->meals)
 		return (false);
 	return (true);

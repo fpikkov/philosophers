@@ -46,7 +46,7 @@ void	set_addresses(t_info *info)
 		assign_forks(info, idx);
 		info->philos[idx].halt_sim = &info->halt_sim;
 		info->philos[idx].printing = &info->printing;
-		info->philos[idx].meal = &info->meals[(idx / 10)];
+		info->philos[idx].meal = &info->meals[idx];
 		info->philos[idx].halt = &info->halt;
 		info->philos[idx].start = &info->start;
 		idx++;
@@ -60,17 +60,11 @@ static bool	init_meals(t_info *info)
 	if (!info)
 		return (false);
 	idx = 0;
-	while (idx < info->meal_mutexes)
+	while (idx < info->count)
 	{
 		if (pthread_mutex_init(&info->meals[idx], NULL) != 0)
 		{
-			while (idx > 0)
-			{
-				pthread_mutex_destroy(&info->meals[idx]);
-				idx--;
-			}
-			if (idx == 0)
-				pthread_mutex_destroy(&info->meals[idx]);
+			destroy_mutexes(info, idx, MEAL);
 			return (false);
 		}
 		idx++;

@@ -16,9 +16,9 @@ static bool	has_philo_died(t_info *info, size_t idx)
 {
 	size_t	current;
 
-	pthread_mutex_lock(&info->meals[idx / 10]);
+	pthread_mutex_lock(&info->meals[idx]);
 	if (info->philos[idx].timer_last_meal == 0)
-		return (safe_unlock(&info->meals[idx / 10], false));
+		return (safe_unlock(&info->meals[idx], false));
 	current = time_in_ms(0) - info->philos[idx].timer_last_meal;
 	if (current > info->philos[idx].death_time \
 	&& (info->philos[idx].eat_amount > 0 \
@@ -27,9 +27,9 @@ static bool	has_philo_died(t_info *info, size_t idx)
 		pthread_mutex_lock(&info->halt_sim);
 		info->halt = true;
 		pthread_mutex_unlock(&info->halt_sim);
-		return (safe_unlock(&info->meals[idx / 10], true));
+		return (safe_unlock(&info->meals[idx], true));
 	}
-	return (safe_unlock(&info->meals[idx / 10], false));
+	return (safe_unlock(&info->meals[idx], false));
 }
 
 static bool	have_philos_eaten(t_info *info)
@@ -41,10 +41,10 @@ static bool	have_philos_eaten(t_info *info)
 		return (false);
 	while (idx < info->count)
 	{
-		pthread_mutex_lock(&info->meals[idx / 10]);
+		pthread_mutex_lock(&info->meals[idx]);
 		if (info->philos[idx].eat_amount > 0)
-			return (safe_unlock(&info->meals[idx / 10], false));
-		pthread_mutex_unlock(&info->meals[idx / 10]);
+			return (safe_unlock(&info->meals[idx], false));
+		pthread_mutex_unlock(&info->meals[idx]);
 		idx++;
 	}
 	pthread_mutex_lock(&info->halt_sim);

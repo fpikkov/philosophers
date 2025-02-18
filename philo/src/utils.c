@@ -58,14 +58,11 @@ void	destroy_mutexes(t_info *info, size_t count, t_flags flag)
 		pthread_mutex_destroy(&info->halt_sim);
 	if (flag & PRINT)
 		pthread_mutex_destroy(&info->printing);
-	if (flag & MEAL)
+	idx = 0;
+	while (idx < count && (flag & MEAL))
 	{
-		idx = 0;
-		while (idx < info->meal_mutexes)
-		{
-			pthread_mutex_destroy(&info->meals[idx]);
-			idx++;
-		}
+		pthread_mutex_destroy(&info->meals[idx]);
+		idx++;
 	}
 }
 

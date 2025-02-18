@@ -59,6 +59,16 @@ typedef enum e_state
 	DEATH
 }	t_state;
 
+typedef enum e_ops
+{
+	ASSIGN,
+	ADD,
+	SUBTRACT,
+	EQUALITY,
+	LESS,
+	GREATER
+}	t_ops;
+
 // Ease of use type definition
 typedef pthread_mutex_t	t_mutex;
 typedef struct timeval	t_time;
@@ -113,7 +123,6 @@ typedef struct s_info
 	_Atomic bool	halt;
 	bool			should_eat;
 	size_t			count;
-	size_t			meal_mutexes;
 	size_t			start_time;
 	t_philo			*philos;
 	t_mutex			*forks;
