@@ -6,7 +6,7 @@ CLEAR = \033[0m
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-DBG_FLAGS = -fdiagnostics-color=always -g -fsanitize=thread -DDEBUG=1
+DBG_FLAGS = -fdiagnostics-color=always -g -fsanitize=thread
 INC_FLAGS = -I$(INCLUDE_DIR)
 P_FLAG = -pthread
 
@@ -25,7 +25,6 @@ SRCS =	${SRC_DIR}/main.c \
 		${SRC_DIR}/mutex.c \
 		${SRC_DIR}/error.c \
 		${SRC_DIR}/utils.c \
-		${SRC_DIR}/logging.c \
 		${SRC_DIR}/routine.c \
 		${SRC_DIR}/routine_monitor.c \
 		${SRC_DIR}/routine_philo.c \

@@ -83,3 +83,23 @@ void	destroy_threads(t_info *info, int64_t count)
 	}
 }
 
+void	log_event(t_philo *philo, t_state state)
+{
+	pthread_mutex_lock(philo->printing);
+	if (state == DEATH)
+		printf("%ld %ld died\n", \
+		time_in_ms() - philo->info->start_time, philo->id);
+	else if (state == THINKING && !(*philo->halt))
+		printf("%ld %ld is thinking\n", \
+		time_in_ms() - philo->info->start_time, philo->id);
+	else if (state == EATING && !(*philo->halt))
+		printf("%ld %ld is eating\n", \
+		time_in_ms() - philo->info->start_time, philo->id);
+	else if (state == SLEEPING && !(*philo->halt))
+		printf("%ld %ld is sleeping\n", \
+		time_in_ms() - philo->info->start_time, philo->id);
+	else if (state == FORK && !(*philo->halt))
+		printf("%ld %ld has taken a fork\n", \
+		time_in_ms() - philo->info->start_time, philo->id);
+	pthread_mutex_unlock(philo->printing);
+}

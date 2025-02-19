@@ -23,10 +23,6 @@
 # include <limits.h>
 # include <stdbool.h>
 
-# ifndef DEBUG
-#  define DEBUG 0
-# endif
-
 // Hard limits on parameters
 # define P_LIMIT 400
 # define TIME_MIN 60
