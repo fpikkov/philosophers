@@ -114,12 +114,12 @@ bool	parse_args(t_info *info, int argc, char **argv)
 {
 	memset(info, 0, sizeof(t_info));
 	if (!parse_info(info, argc, argv))
-		return (free(info), NULL);
+		return (free(info), false);
 	info->philos = (t_philo *)malloc(info->count * sizeof(t_philo));
 	if (!info->philos)
 	{
 		print_error(MALLOC_FAILURE, false);
-		return (free_info(info), NULL);
+		return (free_info(info), false);
 	}
 	memset(info->philos, 0, info->count * sizeof(t_philo));
 	if (info->eat_amount > 0)
@@ -128,7 +128,7 @@ bool	parse_args(t_info *info, int argc, char **argv)
 	if (!init_mutexes(info))
 	{
 		print_error(MUTEX_FAILURE, false);
-		return (free_info(info), NULL);
+		return (free_info(info), false);
 	}
-	return (info);
+	return (true);
 }

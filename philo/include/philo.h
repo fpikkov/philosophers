@@ -159,15 +159,4 @@ void	free_info(t_info *info);
 void	destroy_mutexes(t_info *info, int64_t count, t_flags flag);
 void	destroy_threads(t_info *info, int64_t count);
 
-/*
-	!!!! TIME TO THINK !!!!
-
-	info->philos[idx].id = idx;
-	if ((info->philos[idx].eat_time + info->philos[idx].sleep_time) \
-	< info->philos[idx].death_time)
-		info->philos[idx].think_time = (info->philos[idx].death_time \
-		- (info->philos[idx].eat_time + info->philos[idx].sleep_time)) / 4;
-
-*/
-
 #endif
