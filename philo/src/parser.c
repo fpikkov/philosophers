@@ -12,9 +12,9 @@
 
 #include "philo.h"
 
-static size_t	philo_atoi(const char *str)
+static int64_t	philo_atoi(const char *str)
 {
-	size_t	nbr;
+	int64_t	nbr;
 
 	nbr = 0;
 	while ((*str >= 9 && *str <= 13) || *str == ' ')
@@ -32,62 +32,74 @@ static size_t	philo_atoi(const char *str)
 	return (nbr);
 }
 
-static bool	init_philo(t_info *info, size_t idx, int argc, char **argv)
-{
-	info->philos[idx].id = idx;
-	info->philos[idx].death_time = philo_atoi(argv[2]);
-	info->philos[idx].eat_time = philo_atoi(argv[3]);
-	info->philos[idx].sleep_time = philo_atoi(argv[4]);
-	if (info->philos[idx].death_time < 1 || info->philos[idx].eat_time < 1 \
-	|| info->philos[idx].sleep_time < 1)
-		return (false);
-	if ((info->philos[idx].eat_time + info->philos[idx].sleep_time) \
-	< info->philos[idx].death_time)
-		info->philos[idx].think_time = (info->philos[idx].death_time \
-		- (info->philos[idx].eat_time + info->philos[idx].sleep_time)) / 4;
-	if (argc == 6)
-	{
-		info->philos[idx].eat_amount = (int32_t)philo_atoi(argv[5]);
-		if (info->philos[idx].eat_amount < 1)
-			return (false);
-	}
-	else
-		info->philos[idx].eat_amount = -1;
-	return (true);
-}
-
-static bool	create_philos(t_info *info, int argc, char **argv)
-{
-	size_t	idx;
-
-	idx = 0;
-	info->philos = (t_philo *)malloc(info->count * sizeof(t_philo));
-	if (!info->philos)
-		return (false);
-	memset(info->philos, 0, info->count * sizeof(t_philo));
-	while (idx < info->count)
-	{
-		if (!init_philo(info, idx, argc, argv))
-			return (false);
-		idx++;
-	}
-	return (true);
-}
-
 static bool	parse_info(t_info *info, int argc, char **argv)
 {
-	if (argc < 5)
-		return (false);
 	info->count = philo_atoi(argv[1]);
+	info->death_time = philo_atoi(argv[2]);
+	info->eat_time = philo_atoi(argv[3]);
+	info->sleep_time = philo_atoi(argv[4]);
 	if (info->count < 1 || info->count > P_LIMIT)
-		return (false);
+		return (print_error(PARSE_PHILO, false));
+	if (info->death_time < TIME_MIN || info->eat_time < TIME_MIN \
+	|| info->sleep_time < TIME_MIN)
+		return (print_error(PARSE_TIME, false));
+	info->eat_amount = -1;
+	if (argc == 6)
+	{
+		info->eat_amount = philo_atoi(argv[5]);
+		if (info->eat_amount < 1)
+			return (print_error(PARSE_MEALS, false));
+	}
 	info->forks = (t_mutex *)malloc(sizeof(t_mutex) * info->count);
 	if (!info->forks)
-		return (false);
+		return (print_error(MALLOC_FAILURE, false));
 	info->meals = (t_mutex *)malloc(sizeof(t_mutex) * info->count);
 	if (!info->meals)
-		return (false);
+		return (print_error(MALLOC_FAILURE, false));
 	return (true);
+}
+
+static void	assign_forks(t_info *info, int64_t idx)
+{
+	if (idx % 2)
+	{
+		info->philos[idx].right_fork = &info->forks[idx];
+		info->philos[idx].left_fork = &info->forks[(idx + 1) % info->count];
+	}
+	else
+	{
+		info->philos[idx].left_fork = &info->forks[idx];
+		info->philos[idx].right_fork = &info->forks[(idx + 1) % info->count];
+	}
+}
+
+/**
+ * @brief Sets the pointers in t_philo to the adressses in t_info.
+ * Right fork is found with the formula: index % N.
+ * Left fork is found with the formula: index + 1 % N.
+ * @param info Master structure of the project
+ */
+static void	set_addresses(t_info *info)
+{
+	int64_t	idx;
+	int64_t	count;
+
+	if (!info || !info->philos)
+		return ;
+	idx = 0;
+	count = info->count;
+	while (idx < count)
+	{
+		info->philos[idx].id = idx;
+		assign_forks(info, idx);
+		info->philos[idx].info = info;
+		info->philos[idx].halt_sim = &info->halt_sim;
+		info->philos[idx].printing = &info->printing;
+		info->philos[idx].meal = &info->meals[idx];
+		info->philos[idx].halt = &info->halt;
+		info->philos[idx].eat_amount = info->eat_amount;
+		idx++;
+	}
 }
 
 /**
@@ -107,10 +119,20 @@ t_info	*parse_args(int argc, char **argv)
 	memset(info, 0, sizeof(t_info));
 	if (!parse_info(info, argc, argv))
 		return (free(info), NULL);
-	if (!create_philos(info, argc, argv))
+	info->philos = (t_philo *)malloc(info->count * sizeof(t_philo));
+	if (!info->philos)
+	{
+		print_error(MALLOC_FAILURE, false);
 		return (free_info(info), NULL);
-	if (info->philos[0].eat_amount > 0)
+	}
+	memset(info->philos, 0, info->count * sizeof(t_philo));
+	if (info->eat_amount > 0)
 		info->should_eat = true;
 	set_addresses(info);
+	if (!init_mutexes(info))
+	{
+		print_error(MUTEX_FAILURE, false);
+		return (free_info(info), NULL);
+	}
 	return (info);
 }

@@ -42,9 +42,9 @@ void	free_info(t_info *info)
  * @param[in] count How many mutexes to destroy
  * @param[in] flag Which mutex types to destroy
  */
-void	destroy_mutexes(t_info *info, size_t count, t_flags flag)
+void	destroy_mutexes(t_info *info, int64_t count, t_flags flag)
 {
-	size_t	idx;
+	int64_t	idx;
 
 	idx = 0;
 	if (!info || !count)
@@ -71,9 +71,9 @@ void	destroy_mutexes(t_info *info, size_t count, t_flags flag)
  * @param[in] info Master struct of the project
  * @param[in] count How many philo threads to kill
  */
-void	destroy_threads(t_info *info, size_t count)
+void	destroy_threads(t_info *info, int64_t count)
 {
-	size_t	idx;
+	int64_t	idx;
 
 	idx = 0;
 	while (idx < count)
@@ -83,8 +83,3 @@ void	destroy_threads(t_info *info, size_t count)
 	}
 }
 
-bool	safe_unlock(t_mutex *mtx, bool ret)
-{
-	pthread_mutex_unlock(mtx);
-	return (ret);
-}

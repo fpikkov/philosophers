@@ -12,78 +12,59 @@
 
 #include "philo.h"
 
-static bool	has_philo_died(t_info *info, size_t idx)
+static bool	has_died(t_philo *philo)
 {
-	size_t	current;
+	int64_t	current;
 
-	pthread_mutex_lock(&info->meals[idx]);
-	if (info->philos[idx].timer_last_meal == 0)
-		return (safe_unlock(&info->meals[idx], false));
-	current = time_in_ms(0) - info->philos[idx].timer_last_meal;
-	if (current > info->philos[idx].death_time \
-	&& (info->philos[idx].eat_amount > 0 \
-	|| info->philos[idx].eat_amount == -1))
+	current = time_in_ms() - philo->last_meal;
+	if (current >= philo->info->death_time)
+	{
+		pthread_mutex_lock(&philo->info->halt_sim);
+		philo->info->halt = true;
+		log_event(philo, DEATH);
+		pthread_mutex_unlock(&philo->info->halt_sim);
+		pthread_mutex_unlock(philo->meal);
+		return (true);
+	}
+	return (false);
+}
+
+static bool	check_philos(t_info *info)
+{
+	bool	full;
+	int64_t	idx;
+
+	full = true;
+	idx = 0;
+	while (idx < info->count)
+	{
+		pthread_mutex_lock(&info->meals[idx]);
+		if (has_died(&info->philos[idx]))
+			return (true);
+		if (info->should_eat)
+			if (info->philos[idx].eat_amount > 0)
+				full = false;
+		pthread_mutex_unlock(&info->meals[idx]);
+		idx++;
+	}
+	if (info->should_eat && full)
 	{
 		pthread_mutex_lock(&info->halt_sim);
 		info->halt = true;
 		pthread_mutex_unlock(&info->halt_sim);
-		return (safe_unlock(&info->meals[idx], true));
+		return (true);
 	}
-	return (safe_unlock(&info->meals[idx], false));
-}
-
-static bool	have_philos_eaten(t_info *info)
-{
-	size_t	idx;
-
-	idx = 0;
-	if (!(info->should_eat))
-		return (false);
-	while (idx < info->count)
-	{
-		pthread_mutex_lock(&info->meals[idx]);
-		if (info->philos[idx].eat_amount > 0)
-			return (safe_unlock(&info->meals[idx], false));
-		pthread_mutex_unlock(&info->meals[idx]);
-		idx++;
-	}
-	pthread_mutex_lock(&info->halt_sim);
-	info->halt = true;
-	return (safe_unlock(&info->halt_sim, true));
-}
-
-static void	set_start_time(t_info *info)
-{
-	size_t	start;
-	size_t	idx;
-
-	idx = 0;
-	start = time_in_ms(0);
-	info->start_time = start;
-	while (idx < info->count)
-		info->philos[idx++].start_time = start;
+	return (false);
 }
 
 void	monitor_routine(t_info *info)
 {
-	size_t	idx;
-
-	set_start_time(info);
-	info->start = true;
-	usleep(500);
+	while (time_in_ms() < info->start_time)
+		continue ;
 	while (true)
 	{
-		idx = 0;
-		while (idx < info->count)
-		{
-			if (has_philo_died(info, idx))
-			{
-				log_event(&info->philos[idx], DEATH);
-				return ;
-			}
-			idx++;
-		}
-		if (have_philos_eaten(info))
-			break ;
+		if (check_philos(info))
+			return ;
+		usleep(MONITOR_COOLDOWN);
 	}
 }

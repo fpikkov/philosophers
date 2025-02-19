@@ -17,19 +17,19 @@ static void	event_fancy(t_philo *philo, t_state state)
 	pthread_mutex_lock(philo->printing);
 	if (state == DEATH)
 		printf("💀 %-16ld\t[%ld] died\n", \
-		time_in_ms(philo->start_time), philo->id);
+		time_in_ms() - philo->info->start_time, philo->id);
 	else if (state == THINKING && !(*philo->halt))
 		printf("🤔 %-16ld\t[%ld] is thinking\n", \
-		time_in_ms(philo->start_time), philo->id);
+		time_in_ms() - philo->info->start_time, philo->id);
 	else if (state == EATING && !(*philo->halt))
 		printf("😋 %-16ld\t[%ld] is eating\n", \
-		time_in_ms(philo->start_time), philo->id);
+		time_in_ms() - philo->info->start_time, philo->id);
 	else if (state == SLEEPING && !(*philo->halt))
 		printf("🥱 %-16ld\t[%ld] is sleeping\n", \
-		time_in_ms(philo->start_time), philo->id);
+		time_in_ms() - philo->info->start_time, philo->id);
 	else if (state == FORK && !(*philo->halt))
 		printf("🍴 %-16ld\t[%ld] has taken a fork\n", \
-		time_in_ms(philo->start_time), philo->id);
+		time_in_ms() - philo->info->start_time, philo->id);
 	pthread_mutex_unlock(philo->printing);
 }
 
@@ -38,26 +38,26 @@ static void	event_standard(t_philo *philo, t_state state)
 	pthread_mutex_lock(philo->printing);
 	if (state == DEATH)
 		printf("%ld %ld died\n", \
-		time_in_ms(philo->start_time), philo->id);
+		time_in_ms() - philo->info->start_time, philo->id);
 	else if (state == THINKING && !(*philo->halt))
 		printf("%ld %ld is thinking\n", \
-		time_in_ms(philo->start_time), philo->id);
+		time_in_ms() - philo->info->start_time, philo->id);
 	else if (state == EATING && !(*philo->halt))
 		printf("%ld %ld is eating\n", \
-		time_in_ms(philo->start_time), philo->id);
+		time_in_ms() - philo->info->start_time, philo->id);
 	else if (state == SLEEPING && !(*philo->halt))
 		printf("%ld %ld is sleeping\n", \
-		time_in_ms(philo->start_time), philo->id);
+		time_in_ms() - philo->info->start_time, philo->id);
 	else if (state == FORK && !(*philo->halt))
 		printf("%ld %ld has taken a fork\n", \
-		time_in_ms(philo->start_time), philo->id);
+		time_in_ms() - philo->info->start_time, philo->id);
 	pthread_mutex_unlock(philo->printing);
 }
 
 void	log_event(t_philo *philo, t_state state)
 {
 	if (DEBUG)
-		event_standard(philo, state);
-	else
 		event_fancy(philo, state);
+	else
+		event_standard(philo, state);
 }

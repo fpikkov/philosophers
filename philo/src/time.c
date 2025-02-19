@@ -14,21 +14,15 @@
 
 /**
  * @brief Converts the microsecond time to millisecond time.
- * Start may be left as zero to get the absolute time.
- * @param[in] start the starting time of the simulation
- * @return Current time in unsigned long representation of milliseconds.
+ * @return int64_t current time in milliseconds.
  */
-size_t	time_in_ms(size_t start)
+int64_t	time_in_ms(void)
 {
 	t_time	tv;
-	size_t	time;
 
 	memset(&tv, 0, sizeof(t_time));
 	gettimeofday(&tv, NULL);
-	time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-	if (start != 0)
-		return (time - start);
-	return (time);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
 /**
@@ -36,21 +30,21 @@ size_t	time_in_ms(size_t start)
  * @param[in] msec Time in milliseconds
  * @param[in] halt Pointer to the atomic which tells if the sim should stop
  */
-void	sleep_for_ms(size_t msec, _Atomic bool *halt)
+void	sleep_for_ms(int64_t msec, _Atomic bool *halt)
 {
-	size_t	start;
+	int64_t	start;
 
 	if (msec == 0)
 		return ;
-	start = time_in_ms(0);
-	while (time_in_ms(0) - start < msec)
+	start = time_in_ms();
+	while (time_in_ms() - start < msec)
 	{
 		if (*halt == true)
 			break ;
-		if ((msec - (time_in_ms(0) - start)) > 2)
-			usleep(50);
+		if ((msec - (time_in_ms() - start)) > 2)
+			usleep(SLEEP_USEC);
 		else
-			while (time_in_ms(0) - start < msec)
+			while (time_in_ms() - start < msec)
 				continue ;
 	}
 }

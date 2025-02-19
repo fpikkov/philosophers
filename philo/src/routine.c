@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-static bool	thread_create(t_info *info, size_t idx)
+static bool	thread_create(t_info *info, int64_t idx)
 {
 	if (info->count == 1)
 	{
@@ -37,11 +37,12 @@ static bool	thread_create(t_info *info, size_t idx)
 
 bool	start_routines(t_info *info)
 {
-	size_t	idx;
+	int64_t	idx;
 
 	idx = 0;
 	if (!info)
 		return (false);
+	info->start_time = time_in_ms() + (info->count * START_MULTIPLIER);
 	while (idx < info->count)
 	{
 		if (!thread_create(info, idx))
