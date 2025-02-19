@@ -105,17 +105,13 @@ static void	set_addresses(t_info *info)
 /**
  * @brief Parses the given arguments and stores the values in a struct.
  * Also attempts to build all the philosopher structs.
- * @param[in] argc Aargument counter from main()
+ * @param[in] info The main structure of the program
+ * @param[in] argc Argument counter from main()
  * @param[in] argv Argument vector from main()
- * @return Pointer to t_info type struct on success, otherwise NULL
+ * @return true if parsing was successful, otherwise false
  */
-t_info	*parse_args(int argc, char **argv)
+bool	parse_args(t_info *info, int argc, char **argv)
 {
-	t_info			*info;
-
-	info = (t_info *)malloc(sizeof(t_info));
-	if (!info)
-		return (NULL);
 	memset(info, 0, sizeof(t_info));
 	if (!parse_info(info, argc, argv))
 		return (free(info), NULL);

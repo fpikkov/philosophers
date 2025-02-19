@@ -14,17 +14,15 @@
 
 int	main(int argc, char **argv)
 {
-	t_info		*info;
+	t_info	info;
 
 	if (argc < 5 || argc > 6)
 		return (print_error(MISSING_ARGS, true));
-	info = parse_args(argc, argv);
-	if (!info)
+	if (!parse_args(&info, argc, argv))
 		return (EXIT_FAILURE);
-	if (start_routines(info))
-		destroy_threads(info, info->count);
-	destroy_mutexes(info, info->count, ALL);
-	if (info)
-		free_info(info);
+	if (start_routines(&info))
+		destroy_threads(&info, info.count);
+	destroy_mutexes(&info, info.count, ALL);
+	free_info(&info);
 	return (EXIT_SUCCESS);
 }

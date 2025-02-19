@@ -133,7 +133,7 @@ typedef struct s_info
 
 // --- Setup functions ---
 
-t_info	*parse_args(int argc, char **argv);
+bool	parse_args(t_info *info, int argc, char **argv);
 
 // --- Routine functions ---
 

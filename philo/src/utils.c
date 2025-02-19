@@ -31,9 +31,10 @@ void	free_info(t_info *info)
 		info->forks = NULL;
 	}
 	if (info->meals)
+	{
 		free(info->meals);
-	free(info);
-	info = NULL;
+		info->meals = NULL;
+	}
 }
 
 /**

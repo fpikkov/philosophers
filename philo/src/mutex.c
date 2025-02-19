@@ -57,15 +57,3 @@ bool	init_mutexes(t_info *info)
 		return (destroy_mutexes(info, idx, FORKS | DEAD | PRINT), false);
 	return (true);
 }
-
-/* bool	check_halt(t_info *info)
-{
-	bool	ret;
-
-	ret = false;
-	pthread_mutex_lock(&info->halt_sim);
-	if (info->halt == true)
-		ret = true;
-	pthread_mutex_unlock(&info->halt_sim);
-	return (ret);
-} */
