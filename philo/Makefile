@@ -6,7 +6,7 @@ CLEAR = \033[0m
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-DBG_FLAGS = -fdiagnostics-color=always -g -fsanitize=thread -DDEBUG=1
+DBG_FLAGS = -fdiagnostics-color=always -g -DDEBUG=1
 INC_FLAGS = -I$(INCLUDE_DIR)
 P_FLAG = -pthread
 
