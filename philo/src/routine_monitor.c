@@ -16,6 +16,8 @@ static bool	has_died(t_philo *philo)
 {
 	int64_t	current;
 
+	if (philo->eat_amount == 0)
+		return (false);
 	current = time_in_ms() - philo->last_meal;
 	if (current >= philo->info->death_time)
 	{

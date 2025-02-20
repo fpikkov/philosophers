@@ -114,7 +114,7 @@ bool	parse_args(t_info *info, int argc, char **argv)
 {
 	memset(info, 0, sizeof(t_info));
 	if (!parse_info(info, argc, argv))
-		return (free(info), false);
+		return (free_info(info), false);
 	info->philos = (t_philo *)malloc(info->count * sizeof(t_philo));
 	if (!info->philos)
 	{

@@ -1,5 +1,6 @@
 *.swp
 *.TMP
+*.txt
 .~
 *.so
 *.dll
